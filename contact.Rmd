@@ -1,33 +1,32 @@
 ---
-# Vous pouvez vous servir de cette page pour parler de vous.
 title: "À propos"
 description: |
-    Lisez ci-dessous pour en apprendre plus sur la personne derrière ce rapport.
+     En lisant la page ci-dessous, vous pourrez en apprendre plus sur Gabrielle Desrosiers-Brisebois, l'étudiante derrière ce rapport analytique portant sur la pandémie de COVID-19.
 toc: false
 ---
 
 
-## Bio 
+## Biographie 
 
-Le [cours FAS1002](https://admission.umontreal.ca/cours-et-horaires/cours/fas-1002/) est une introduction à la programmation en sciences sociales avec [R](https://www.r-project.org/), un langage de programmation et un environnement statistique populaire pour analyser de données. Principalement convoité pour ses fonctionnalités statistiques avancées, R s’avère autant utilisé en recherche qu’en industrie, ce qui confère un avantage concret à son apprentissage. À ce sujet, R se prête bien à l’apprentissage de la programmation en raison de:
+J'ai complété mon baccalauréat en science politique à l'Université de Montréal à la fin de l'année 2020. Je suis présentement étudiante à la maîtrise en science politique à l'Université de Montréal, sous la direction du professeur Jean-François Godbout. Je participe également au groupe de recherche [_Complex Data Lab_](https://politicalpolarization.github.io/) en collaboration avec l'Université McGill.
 
-* sa nature libre et gratuite;
-* sa polyvalence de fonctionnalités;
-* sa popularité et sa variété de domaines d’application;
-* la diversité de ressources et d’aide disponible gratuitement sur le Web;
-* sa vibrante communauté reconnue pour son inclusivité et son support bienveillant. 
+Mes intérêts de recherche portent notamment sur :
+
+* Les institutions politiques canadiennes et américaines;
+* La polarisation partisane et politique;
+* La communication politique et les réseaux sociaux. 
 
 <aside>
-![](static/images/FAS1002.png){width=80%}
+![](static/images/logo.png){width=40%}
 </aside>
 
 
 ## Contact
 
-**Programme** | [Microprogramme en analyse des mégadonnées en sciences humaines et sociales](https://admission.umontreal.ca/programmes/microprogramme-de-1er-cycle-en-analyse-des-megadonnees-en-sciences-humaines-et-sociales/structure-du-programme/)
+**Programmes** | [Maîtrise en science politique](https://admission.umontreal.ca/programmes/maitrise-en-science-politique/) et [Microprogramme en analyse des mégadonnées en sciences humaines et sociales](https://admission.umontreal.ca/programmes/microprogramme-de-1er-cycle-en-analyse-des-megadonnees-en-sciences-humaines-et-sociales/structure-du-programme/)
 
 **Université** | [Université de Montréal](https://umontreal.ca)
 
-**Courriel** | fas1002@samuelguay.ca
+**Courriel** | gabrielle.desrosiers-brisebois@umontreal.ca
 
 

@@ -1,7 +1,7 @@
 ---
-title: "Titre de votre projet final"
+title: "Rapport analytique portant sur la pandémie de COVID-19"
 description: |
-  Ceci est votre page d'accueil de votre site web
+  Ceci est votre page d'accueil de votre site web. Ajouter une petite description du projet de manière générale.
 site: distill::distill_website
 toc: false
 ---

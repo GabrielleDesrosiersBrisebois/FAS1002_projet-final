@@ -1,15 +1,15 @@
 name: "FAS1002_projet-final"
-title: "FAS1002 - Projet final"
-favicon: static/images/FAS1002.png
+title: "FAS1002 - Rapport analytique sur la pandémie de COVID-19"
+favicon: static/images/logo.png
 # N'oubliez pas d'activer votre site web dans vos params sur GH.
-repository_url: https://github.com/FAS1002/FAS1002_projet-final
+repository_url: https://gabrielledesrosiersbrisebois.github.io/FAS1002_projet-final/
 description: |
   Projet final pour le cours FAS1002! 🔥
 output_dir: "docs"
 theme: static/theme.css
 navbar:
   logo:
-    image: static/images/FAS1002.png
+    image: static/images/logo.png
     href: index.html
   source_url: true
   left:
@@ -46,7 +46,9 @@ navbar:
 
       # voir https://fontawesome.com/v4.7/icons/ pour les icones
     - icon: fab fa-twitter
-      href: https://twitter.com/VOTREUSERNAME
+      href: https://twitter.com/DB_Gabrielle
+    - icon: fab fa-github 
+      href: https://github.com/GabrielleDesrosiersBrisebois
 creative_commons: CC BY
 
 output:
