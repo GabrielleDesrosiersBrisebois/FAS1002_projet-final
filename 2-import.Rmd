@@ -1,5 +1,5 @@
 ---
-title: "Titre de votre deuxième R Markdown"
+title: "Importation des données employées"
 description: | 
   Petite description du contenu de cette page
 date: "`r Sys.Date()`"
@@ -29,10 +29,73 @@ output: distill::distill_article
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Vous pouvez maintenant importer et travailler sur vos données, comme celles de @mathieu2021.
+```{r include=FALSE}
+source("R/telechargement_donnees.R", local = knitr::knit_global(), encoding = "UTF-8")
+source("R/manipulation_donnees.R", local = knitr::knit_global(), encoding = "UTF-8")
+source("R/ouverture_donnees_processed.R", local = knitr::knit_global(), encoding = "UTF-8")
 
+library(kableExtra)
+```
 
-### Différents niveaux de titres
+Vous pouvez maintenant importer et travailler sur vos données, comme celles de @mathieu2021. Test citation de l'article de @cheng_hinnant_2021.
 
-Dans vos différents documents, assurez-vous de bien utiliser la notation avec du Markdown et autres. 
+Ici, je vais citer la provenance de mes quatre banques de données. Ajouter les sources à reference.bib.
 
+-   Expliquer que les données ont été fusionnées.
+-   Mettre en évidence le calcul pour valider la validité de la variable `total_vaccination_per_hundred`.
+
+## Présentation des banques de données utilisées
+
+## Validité de la variable `total_vaccinated_per_hundred`
+
+Comme cela a été présenté plus haut, les données employées dans le cadre de ce rapport analytique proviennent de deux banques de données distinctes soit, *Our World in Data* et *Gapminder*. Il est ainsi possible d'utiliser les données populationnelles de *Gapminder* pour l'année 2021 afin de contraster les valeurs de la variable `total_vaccinated_per_hundred`, qui proviennent exclusivement de la banque de données *Our World in Data*. En d'autres termes, le calcul ci-dessous permettra de comparer les valeurs de la variable `total_vaccinated_per_hundred` avec les nouvelles valeurs obtenues en alliant des éléments des deux banques de données.
+
+```{r calculs total_vaccination_per_hundred}
+# Sélectionner seulement les observations pour l'année 2021 :
+
+df_countries_2021 <- df_countries %>% 
+  filter(str_detect(time, "2021"))
+
+# Calcul: (total_vaccinations/Population)*100
+
+df_countries_2021 <- df_countries_2021 %>% 
+  mutate(NEW_total_vaccinations_per_hundred = (df_countries_2021[, "total_vaccinations"] / df_countries_2021[, "Population"]) * 100) %>% 
+  relocate(NEW_total_vaccinations_per_hundred, .after = total_vaccinations_per_hundred)
+
+df_countries_2021$NEW_total_vaccinations_per_hundred <- round(df_countries_2021$NEW_total_vaccinations_per_hundred, 2)
+
+# Nouvelle variable pour savoir si les données sont identiques :
+
+df_countries_2021 <- df_countries_2021 %>%
+  mutate(validity_total_vaccinations_per_hundred = ifelse(NEW_total_vaccinations_per_hundred == total_vaccinations_per_hundred, "Identique", "Non-identique")) %>% 
+  relocate(validity_total_vaccinations_per_hundred, .after = NEW_total_vaccinations_per_hundred)
+
+validity <- df_countries_2021 %>% 
+  group_by(validity_total_vaccinations_per_hundred) %>% 
+  summarise(n = n()) %>% 
+  ungroup() 
+
+# Retirer les NAs du tableau :
+
+validity <- validity[-c(3),]    #NA = 33 136 observations 
+
+# Ajouter une colonne pourcentage :
+
+validity <- validity %>% 
+  mutate(pourcentage = n/sum(n)*100) 
+
+validity$pourcentage <- round(validity$pourcentage, 2)
+
+# Mofification des noms des variables :
+
+colnames(validity) <- c("État de la comparaison", "Nombre", "Pourcentage")
+```
+
+### Résultats de la comparaison
+
+```{r comparaison, fig.cap="Comparaison entre les deux variables"}
+kable(validity, caption = "Comparaison entre les deux variables") %>%
+  kable_styling(full_width = T, font_size = 12) 
+```
+
+Le tableau \@ref(tab:comparaison) permet de constater qu'une vaste majorité, soit 92.81 % des observations de la variable `total_vaccinated_per_hundred` sont identiques aux observations de la variable `NEW_total_vaccinated_per_hundred`, qui a été constituée à partir des données *Our World in Data* et *Gapminder*. Le nombre de cas où les résultats ne sont pas identiques est relativement peu nombreux. Dans plusieurs cas non-identiques, les valeurs obtenues demeurent tout de même très près des valeurs de la variable originale. Bien qu'il ne soit pas possible d'affirmer que nous obtenons un taux identique pour chaque pays, un taux de concordance de plus de 90 % permet néanmoins de constater que la variable `total_vaccinated_per_hundred` est valide. En bref, il est toutefois important de mentionner que 33 136 cas qui ne contenaient pas d'information (NA) sur le taux de vaccination ont été retirés du tableau.
