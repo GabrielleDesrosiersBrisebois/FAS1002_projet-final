@@ -1,7 +1,8 @@
 ---
-title: "Rapport analytique portant sur la pandémie de COVID-19"
+title: "Rapport analytique portant sur la vaccination contre la COVID-19"
 description: |
-  Ceci est votre page d'accueil de votre site web. Ajouter une petite description du projet de manière générale.
+ Ce site a été conçu dans le cadre du cours **FAS1002: Initiation à la programmation en sciences sociales**. Ce dernier vise à présenter et à analyser les données liées à la vaccination contre la COVID-19. 
+bibliography: references.bib  
 site: distill::distill_website
 toc: false
 ---
@@ -10,32 +11,132 @@ toc: false
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Vous pouvez faire le résumé de votre projet directement sur cette page et utiliser le document [1-intro](1-intro.html) pour décrire votre projet.
+## Portrait de l'évolution de la vaccination
 
-Il s'agit d'un fichier R Markdown traditionnel. ^[Avec des petits trucs sympa comme des notes de bas de page]
+### À l'échelle mondiale
 
-## Inclure des graphiques
+```{r worldvacc, fig.cap="Évolution du nombre de doses administrées à l'échelle mondiale", layout="l-body-outset", fig.width=6, fig.height=4}
+#Manipulations :
 
-Comme la classique pyramide à la Figure \@ref(fig:pie) par exemple:
+df_world <- df_world %>% 
+  mutate(month = month(date)) %>% 
+  relocate(month, .before = time)
 
-```{r pie, fig.cap='Une très belle tarte', tidy=FALSE}
-par(mar = c(0, 1, 0, 1))
-pie(
-  c(280, 60, 20),
-  c('Ciel', 'Côté ensoleillé de la pyramide', 'Côté ombragé de la pyramide'),
-  col = c('#0292D8', '#F7EA39', '#C4B632'),
-  init.angle = -50, border = NA
-)
+sum_world_vaccination <- df_world %>% 
+  group_by(time, month) %>% 
+  summarise(sum_daily_vaccinations = sum(daily_vaccinations, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  unite("date", time:month) %>% 
+  mutate(date = str_replace_all(date, "_", "-"))
+
+sum_world_vaccination$sum_daily_vaccinations <- round(sum_world_vaccination$sum_daily_vaccinations, 0)
+
+sum_world_vaccination$date <- as_date(as.yearmon(sum_world_vaccination$date))
+
+# Graphique
+
+options(scipen = 10) #pour enlever la notation mathématique.
+
+g1 <- ggplot(data = sum_world_vaccination,
+       aes(x = as.factor(date), y = sum_daily_vaccinations)) +
+  
+  geom_col(fill = "#163950", color = "#163950") +
+
+  scale_x_discrete(name = "", 
+                   labels = c("Déc. 2020", "Jan. 2021", "Fév. 2021", "Mars 2021"," Avr. 2021", "Mai 2021", "Juin 2021", "Juill. 2021", "Août 2021", "Sept. 2021", "Oct. 2021", "Nov. 2021", "Déc. 2021")) +
+  scale_y_continuous(name = "Nombre de doses",
+                     breaks = c(0, 250000000, 500000000, 750000000, 1000000000, 1250000000),
+                     labels = c("0", "250 000 000", "500 000 000", "750 000 000", "1 000 000 000", "1 250 000 000")) +
+  
+  labs(title = "Évolution mensuelle du nombre de nouvelles doses\nadministrées à travers le monde") +
+
+  theme_ipsum() +
+  theme(plot.title = element_text(size = 14, hjust = 0.5, vjust = 5),
+        axis.text.x = element_text(size = 9, angle = 30, hjust = 0.7, vjust = 0.7),
+        axis.ticks.x = element_line(),
+        plot.background = element_rect(fill = "white"),
+        panel.background = element_rect(fill = "white", color = "white", size = 0.5, linetype = "solid"),
+        panel.grid.major = element_line(size = 0.5, linetype = "solid", color = "white"),
+        panel.grid.minor = element_line(size = 0.25, linetype = "solid", color = "white"))
+
+g1
 ```
 
+```{r include=FALSE}
+ggsave("figures/figure_1.png", plot = g1, width = 6, height = 4)
+```
+
+<div style="text-align: justify"> Le graphique \@ref(fig:worldvacc) permet d'illustrer le nombre de doses de vaccin contre la COVID-19 administrées, par mois, à l'échelle mondiale. En ce sens, le nombre de doses administrées n'a cessé de s'accroître entre les mois de décembre 2020 et de juin 2021. Le mois d'août 2021 marque quant à lui le sommet pour le nombre de doses administrées avec près de 1 200 000 000. Selon @felter_2021 du *Council on Foreign Relations*, l'approbation de plus d'une vingtaine de vaccins contre le plus récent coronavirus - incluant notamment les vaccins des compagnies *Pfizer BioNTech*, *Moderna*, *Sinopharm* et *Johnson & Johnson* - ainsi que la coopération et les investissements provenant de plusieurs secteurs tels que les compagnies privées, les gouvernements, les organisations internationales et les instituts de recherche ont permis de mettre sur pied plusieurs vaccins efficaces pouvant être déployés massivement et rapidement. Certes, l'administration des doses, à l'échelle de la planète, connaît tout de même un certain déclin depuis septembre 2021. </div>
+
+### Au niveau continental[^1]
+
+[^1]: L'Amérique du Nord et l'Amérique du Sud sont regroupées sous la catégorie "Amériques".
+
+```{r contvacc, fig.cap="Évolution du nombre de doses administrées à l'échelle continentale", layout="l-body-outset", fig.width=6, fig.height=4}
+#Manipulations
+
+df_continents <- df_continents %>% 
+  mutate(month = month(date)) %>% 
+  relocate(month, .before = time)
+
+sum_continents_vaccination <- df_continents %>% 
+  group_by(time, month, name) %>% 
+  summarise(sum_daily_vaccinations = sum(daily_vaccinations, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  unite("date", time:month) %>% 
+  mutate(date = str_replace_all(date, "_", "-"))
+
+sum_continents_vaccination$sum_daily_vaccinations <- round(sum_continents_vaccination$sum_daily_vaccinations, 0)
+
+sum_continents_vaccination$date <- as_date(as.yearmon(sum_continents_vaccination$date))
+
+#Graphique
+
+options(scipen = 10) #pour enlever la notation mathématique.
+
+g2 <- ggplot(data = sum_continents_vaccination,
+       aes(x = as.factor(date), y = sum_daily_vaccinations, group = name, color = name)) +
+  
+  geom_line(alpha = 0.8) +
+  geom_point(size = 2, alpha = 0.8) +
+  
+  scale_x_discrete(name = "", 
+                   labels = c("Déc. 2020", "Jan. 2021", "Fév. 2021", "Mars 2021"," Avr. 2021", "Mai 2021", "Juin 2021", "Juill. 2021", "Août 2021", "Sept. 2021", "Oct. 2021", "Nov. 2021", "Déc. 2021")) +
+  scale_y_continuous(name = "Nombre de doses",
+                     breaks = c(0, 300000000, 600000000, 900000000),
+                     labels = c("0", "300 000 000", "600 000 000", "900 000 000")) +
+  scale_color_manual(values = c("#63ccca", "#313b72", "#462255", "#397367", "#7ae582"),    
+                     labels = c("Afrique", "Asie", "Europe", "Océanie", "Amériques"),
+                     guide = guide_legend(direction = "horizontal", title.position = "top")) +
+  
+  labs(title = "Évolution mensuelle du nombre de nouvelles doses\nadministrées par continent",
+       color = "Continent") +
+  
+  theme_ipsum() +
+  theme(plot.title = element_text(size = 14, hjust = 0.5, vjust = 5),
+        axis.text.x = element_text(size = 9, angle = 30, hjust = 0.7, vjust = 0.7),
+        axis.ticks.x = element_line(),
+        plot.background = element_rect(fill = "white"),
+        panel.background = element_rect(fill = "white", color = "white", size = 0.5, linetype = "solid"),
+        panel.grid.major = element_line(size = 0.5, linetype = "solid", color = "white"),
+        panel.grid.minor = element_line(size = 0.25, linetype = "solid", color = "white"),
+        legend.position = "bottom",
+        legend.title.align = 0.5,
+        legend.title = element_text(size = 10)) 
+
+g2
+```
+
+```{r include=FALSE}
+ggsave("figures/figure_2.png", plot = g2, width = 6, height = 4)
+```
+
+<div style="text-align: justify"> Malgré les nombres totaux de doses vaccins pour contrer la pandémie de COVID-19 qui ont été déployées depuis le mois de décembre 2020, le graphique \@ref(fig:contvacc) met en évidence la disparité dans le déploiement de ces doses. L'iniquité dans l'administration des doses est particulièrement marquée au niveau du continent africain. En dépit du fait que l'Afrique soit le second continent le plus populeux, dernière l'Asie, ce dernier maintient un nombre de doses administrées par mois similaire à celui de l'Océanie, et ce depuis le début de la campagne de vaccination contre la COVID-19 à l'échelle mondiale. *A contrario*, l'Europe qui compte plus d'une fois et demie moins d'habitants que l'Afrique a visiblement bénéficié d'une quantité impressionnante de vaccins compte tenu de sa population générale. À cet égard, plusieurs chercheurs (p. ex. @rutschman2021covid, @daoudi_2020) ont qualifié la stratégie des pays les plus fortunés de la planète de « nationalisme vaccinal ». Le nationalisme vaccinal est notamment décrit par @zhou2021vaccine comme le fait de « réserver des millions de doses de nouveaux vaccins pour un usage domestique pendant une crise de santé publique transnationale ». Ce type de comportements étatiques a donc pour effet d'entraîner une course entre les États pour être les premiers sur les marchés et pour obtenir des droits d'accès prioritaires dans un contexte de production de doses limitées. À cet effet, la journaliste du *Guardian*, Julia @kollewe2021pfizer a révélé que l'Union européenne a réservé 300 millions de doses auprès de *Pfizer BioNTech*, 310 millions auprès de *Moderna* (avec des options pour 150 millions de doses supplémentaires en 2022) et jusqu'à 400 millions de doses respectivement auprès de *Johnson & Johnson* et d'*AstraZeneca*. </div>   
+
 <aside>
-Quand même très cool, non? Vous pouvez mettre des annotations sur le côté! 
+La variable `daily_vaccinations` représente les nouvelles doses administrées par jour, lissée sur une période de 7 jours.
 </aside>
-
-### Toujours très important de mettre les bons niveaux de titres
-
-Un peu de texte de remplissage pour faire comme si la page était plus longue. *Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.*
 
 ## Remerciements {.appendix}
 
-J'aimerais remercier toutes les étudiantes et tous les étudiants du cours FAS1002 de l'automne 2021 pour leur enthousiasme, leur ouverture et leur rétroaction envers le cours!
+J'aimerais remercier [Samuel Guay](https://github.com/SamGuay) qui a donné le cours **FAS1002: Initiation à la programmation en sciences sociales**, lors de la session d'automne 2021, ainsi que l'ensemble des étudiants ayant participé activement au cours! 😊
