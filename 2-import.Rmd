@@ -1,7 +1,7 @@
 ---
-title: "Importation des données employées"
+title: "Importation des données"
 description: | 
-  Petite description du contenu de cette page
+  Cette page contient des informations relatives à la provenance des données employées afin de produire ce rapport analytique, en plus de contenir une vérifier la validité d'une variable contenue dans la banque de données *Our World in Data*.
 date: "`r Sys.Date()`"
 # Modifier les détails que vous voulez
 author:
@@ -30,25 +30,69 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r include=FALSE}
+#Importation des scripts pour télécharger, nettoter et ouvrir les données :
+
 source("R/telechargement_donnees.R", local = knitr::knit_global(), encoding = "UTF-8")
 source("R/manipulation_donnees.R", local = knitr::knit_global(), encoding = "UTF-8")
 source("R/ouverture_donnees_processed.R", local = knitr::knit_global(), encoding = "UTF-8")
 
+# Appeler les packages requis :
+
+library(magick)
+library(webshot)
 library(kableExtra)
+library(hrbrthemes)
+library(plotly)
+library(zoo)
 ```
 
-Vous pouvez maintenant importer et travailler sur vos données, comme celles de @mathieu2021. Test citation de l'article de @cheng_hinnant_2021.
+## Présentation des banques de données
 
-Ici, je vais citer la provenance de mes quatre banques de données. Ajouter les sources à reference.bib.
+### [Our World in Data - Vaccination](https://github.com/owid/covid-19-data/tree/master/public/data/vaccinations)
 
--   Expliquer que les données ont été fusionnées.
--   Mettre en évidence le calcul pour valider la validité de la variable `total_vaccination_per_hundred`.
+::: {style="text-align: justify"}
+D'abord, les données de @mathieu2021 concernant la vaccination contre la COVID-19 ont été utilisées dans ce rapport. Cette banque de données contient des informations relatives aux doses de vaccins administrées (premières doses, deuxièmes doses et *boosters*) et au nombre d'individus vaccinés, dans tout près de 170 pays, ainsi que des données agrégées au niveau mondial. La collecte de ces données a débuté au mois de décembre 2020 et celles-ci sont mises à jour quotidiennement[^1].
+:::
 
-## Présentation des banques de données utilisées
+[^1]: En date de 22 décembre 2021, les données sont mises à jour quotidiennement.
+
+### [Gapminder - Population](https://www.gapminder.org/data/documentation/gd003/)
+
+::: {style="text-align: justify"}
+La banque de données @population_dataset_v.6_2019 contient des données démographiques pour les pays, les continents ainsi que pour le monde entier de 1800 à 2100. Les informations concernant les années futures sont basées sur les projections du [*UN Population Database*](https://population.un.org/wpp/). Certes, dans le cadre de ce rapport, seules les données démographiques liées aux années 2020 et 2021 ont été conservées. De plus, la version la plus récente de cette banque de données a été mise à jour en décembre 2019.
+:::
+
+### [Gapminder - Produit intérieur brut (PIB)](https://www.gapminder.org/data/documentation/gd001/)
+
+::: {style="text-align: justify"}
+Par ailleurs, la banque de données @gdp_per_capita_dataset_v.27_2021 met de l'avant des informations relatives au produit intérieur brut, tant au niveau global que par habitant. Ces données s'étendent sur une vaste période, soit de 1800 à 2050. Les projections à partir de l'année 2026 sont quant à elles basées sur les estimations économiques d'avril 2021 du [Fonds monétaire international](https://www.imf.org/en/Publications/WEO/weo-database/2021/April). Encore une fois, seules les données pour les années 2020 et 2021 apparaissent dans ce rapport. En outre, la plus récente mise à jour de ces données s'est produite en avril 2021.
+:::
+
+### [Gapminder - Espérance de vie](https://www.gapminder.org/data/documentation/gd004/)
+
+::: {style="text-align: justify"}
+La banque de données @life_expectancy_v.11_2020 a également été mise sur pied et elle regroupe des informations sur l'espérance de vie à la naissance des individus en fonction des continents, des pays ainsi qu'au niveau mondial. Ses informations sont disponibles à partir de l'année 1800 jusqu'à l'année 2100. Tout comme pour la banque de données @population_dataset_v.6_2019, les projections sont tirées du [*UN Population Database*](https://population.un.org/wpp/). Afin de jumeler ces données avec celles de @mathieu2021, seulement les données de 2020 et de 2021 ont été retenues. La version 11 de cette banque de données est la plus récente, avec une mise à jour effectuée en janvier 2020.
+:::
+
+### [Statistiques ONU et ISO3166 - Pays et continents associés](https://github.com/lukes/ISO-3166-Countries-with-Regional-Codes)
+
+::: {style="text-align: justify"}
+Comme les banques de données mentionnées précédemment ne contiennent pas les continents associés à chaque pays, cette banque de données a été ajoutée afin de mettre sur pied la variable `continent`. Cette dernière a été créée par @duncalfe_2019 à partir d'informations recueillies auprès de [UN Statistics](https://unstats.un.org/unsd/methodology/m49/overview) et de l'[Organisation internationale de normalisation](https://www.iso.org/iso-3166-country-codes.html). 
+:::
+
+#### En résumé pour produire le présent rapport analytique, les cinq banques de données suivantes ont été utilisées:
+
+-   [Our World in Data-Vaccination](https://github.com/owid/covid-19-data/tree/master/public/data/vaccinations);
+-   [Gapminder-Population](https://docs.google.com/spreadsheets/d/14_suWY8fCPEXV0MH7ZQMZ-KndzMVsSsA5HdR-7WqAC0/edit#gid=501532268);
+-   [Gapminder-GDP](https://docs.google.com/spreadsheets/d/1gZZ28UiWCVue-tFHMEVOvSO58x7x-w20E23l1wZTR3E/edit#gid=501532268);
+-   [Gapminder-Life expectancy](https://docs.google.com/spreadsheets/d/11mulzUH3_cueq-V9D5KIlo9oHE9YYZrUSeVyCin7_rM/edit#gid=501532268);
+-   [ISO-3166 Countries with Regional Codes](https://github.com/lukes/ISO-3166-Countries-with-Regional-Codes).
 
 ## Validité de la variable `total_vaccinated_per_hundred`
 
+::: {style="text-align: justify"}
 Comme cela a été présenté plus haut, les données employées dans le cadre de ce rapport analytique proviennent de deux banques de données distinctes soit, *Our World in Data* et *Gapminder*. Il est ainsi possible d'utiliser les données populationnelles de *Gapminder* pour l'année 2021 afin de contraster les valeurs de la variable `total_vaccinated_per_hundred`, qui proviennent exclusivement de la banque de données *Our World in Data*. En d'autres termes, le calcul ci-dessous permettra de comparer les valeurs de la variable `total_vaccinated_per_hundred` avec les nouvelles valeurs obtenues en alliant des éléments des deux banques de données.
+:::
 
 ```{r calculs total_vaccination_per_hundred}
 # Sélectionner seulement les observations pour l'année 2021 :
@@ -77,7 +121,7 @@ validity <- df_countries_2021 %>%
 
 # Retirer les NAs du tableau :
 
-validity <- validity[-c(3),]    #NA = 33 136 observations 
+validity <- validity[-c(3),]    #NA = 33 136 observations. 
 
 # Ajouter une colonne pourcentage :
 
@@ -95,7 +139,17 @@ colnames(validity) <- c("État de la comparaison", "Nombre", "Pourcentage")
 
 ```{r comparaison, fig.cap="Comparaison entre les deux variables"}
 kable(validity, caption = "Comparaison entre les deux variables") %>%
-  kable_styling(full_width = T, font_size = 12) 
+  kable_styling(full_width = T, font_size = 12)
 ```
 
-Le tableau \@ref(tab:comparaison) permet de constater qu'une vaste majorité, soit 92.81 % des observations de la variable `total_vaccinated_per_hundred` sont identiques aux observations de la variable `NEW_total_vaccinated_per_hundred`, qui a été constituée à partir des données *Our World in Data* et *Gapminder*. Le nombre de cas où les résultats ne sont pas identiques est relativement peu nombreux. Dans plusieurs cas non-identiques, les valeurs obtenues demeurent tout de même très près des valeurs de la variable originale. Bien qu'il ne soit pas possible d'affirmer que nous obtenons un taux identique pour chaque pays, un taux de concordance de plus de 90 % permet néanmoins de constater que la variable `total_vaccinated_per_hundred` est valide. En bref, il est toutefois important de mentionner que 33 136 cas qui ne contenaient pas d'information (NA) sur le taux de vaccination ont été retirés du tableau.
+```{r include=FALSE}
+kable(validity, caption = "Comparaison entre les deux variables") %>%
+  kable_styling(full_width = T, font_size = 12) %>% 
+  save_kable("figures/table_1.png")
+```
+
+::: {style="text-align: justify"}
+Le tableau \@ref(tab:comparaison) permet de constater qu'une vaste majorité, soit 92.81 % des observations de la variable `total_vaccinated_per_hundred` sont identiques aux observations de la variable `NEW_total_vaccinated_per_hundred`, qui a été constituée à partir des données *Our World in Data* et *Gapminder*. Le nombre de cas où les résultats ne sont pas identiques est relativement peu nombreux. Dans plusieurs cas non identiques, les valeurs obtenues demeurent tout de même très près des valeurs de la variable originale. Ces petites marges d'erreurs entre les deux taux s'expliquent en partie par des sources différentes pour les données démographies. cela est le cas de la Serbie, de Singapoure, de Chypre et d'Israël, dont les informations démographiques ne proviennent pas du *UN Population Dataset*, mais de sources tierces[^2]. Un autre élément pouvant expliquer les petites différences entre les taux est la méthode retenue pour arrondir les résultats. Bien qu'il ne soit pas possible d'affirmer que nous obtenons un taux identique pour chaque pays, un taux de concordance de plus de 90 % permet néanmoins de constater que la variable `total_vaccinated_per_hundred` est valide. En bref, il est toutefois important de mentionner que 33 136 cas qui ne contenaient pas d'information (NA) sur le taux de vaccination ont été retirés du tableau.
+:::
+
+[^2]: Pour obtenir les sources exactes utilisées pour chacque pays, celles-ci sont disponibles [ici](https://github.com/owid/covid-19-data/blob/master/scripts/input/un/population_latest.csv).
