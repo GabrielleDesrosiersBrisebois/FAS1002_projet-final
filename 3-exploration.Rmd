@@ -38,7 +38,7 @@ Cette section a pour objectif de présenter des statistiques descriptives en lie
 ### Moment de l'obtention des données liées à la vaccination, par pays
 
 ::: {style="text-align: justify"}
-Comme cela a été préalablement évoqué dans la [page précédente](2-import.html), l'ensemble de données ne sont pas mises à jour au même moment. En ce sens, seules celles de @mathieu2021 sont actualisées sur une base quotidienne. Malgré des données vaccinales actualisées à tous les jours, certains pays ne sont toutefois pas en mesure de soumettre leurs données vaccinales sur une base quotidienne. Il devient alors pertinent de visualiser la plus récente donnée de vaccination en fonction de chaque pays, au moment de la production de ce rapport, soit le 22 décembre 2021.  
+Comme cela a été préalablement évoqué dans la [page précédente](2-import.html), l'ensemble de données ne sont pas mises à jour au même moment. En ce sens, seules celles de @mathieu2021 sont actualisées sur une base quotidienne. Malgré des données vaccinales actualisées à tous les jours, certains pays ne sont toutefois pas en mesure de soumettre leurs données vaccinales sur une base quotidienne. Il devient alors pertinent de visualiser la plus récente donnée de vaccination en fonction de chaque pays, au moment de la production de ce rapport, soit le 22 décembre 2021.
 :::
 
 ```{r include=FALSE}
@@ -94,8 +94,7 @@ g3 <- ggplot(data = recent_data,
   
   scale_x_discrete(name = "") +
   scale_y_continuous(name = "Nombre de pays",
-                     breaks = seq(0, 60, 15)
-                     ) +
+                     breaks = seq(0, 60, 10)) +
   
   labs(title = "Date d'obtention des plus récentes données de vaccination",
        subtitle = "Fréquence aggrégée en fonction du nombre de pays") +
@@ -103,7 +102,7 @@ g3 <- ggplot(data = recent_data,
   theme_ipsum() +
   theme(plot.title = element_text(size = 12, hjust = 0.5),
         plot.subtitle = element_text(size = 10, hjust = 0.5, vjust = 4.5),
-        plot.background = element_rect(fill = "white"),
+        plot.background = element_rect(fill = "white", color = "white"),
         panel.background = element_rect(fill = "white", color = "white", size = 0.5, linetype = "solid"),
         axis.text.y = element_text(size = 5.5),
         axis.text.x = element_text(size = 5, angle = 30, hjust = 0.8, vjust = 0.7),
@@ -117,7 +116,7 @@ ggsave("figures/figure_3.jpeg", plot = g3, width = 6, height = 4)
 ```
 
 ::: {style="text-align: justify"}
-À l'aide de ce graphique à barres, il est possible de remarquer qu'une pluralité de pays possèdent des données vaccinales à jour, c'est-à-dire datant de moins de vingt-quatre heures. En revanche, quelques données possèdent des informations vaccinales qui ne sont plus réellement d'actualité puisqu'elles sont plusieurs mois en retard. Pour en savoir plus sur les dates de mises à jour de chacun des pays, il est possible de consulter le tableau \@ref(tab:recent). 
+À l'aide de ce graphique à barres, il est possible de remarquer qu'une pluralité de pays possèdent des données vaccinales à jour, c'est-à-dire datant de moins de vingt-quatre heures. En revanche, quelques données possèdent des informations vaccinales qui ne sont plus réellement d'actualité puisqu'elles sont plusieurs mois en retard. Pour en savoir plus sur les dates de mises à jour de chacun des pays, il est possible de consulter le tableau \@ref(tab:recent).
 :::
 
 ***rendre accessible ici, après les calculs, un lien vers mes data sur GitHub.***
@@ -140,7 +139,7 @@ stats_vacc_continents$Moyenne <- round(stats_vacc_continents$Moyenne, 0)
 stats_vacc_continents$Médiane <- round(stats_vacc_continents$Médiane, 0)
 ```
 
-```{r stats_cont, fig.cap="Statistiques vaccinales, par continent"}
+```{r statscont, fig.cap="Statistiques vaccinales, par continent"}
 kable(stats_vacc_continents, caption = "Statistiques vaccinales, par continent") %>% 
   kable_styling(full_width = FALSE, font_size = 12)
 ```
@@ -193,6 +192,7 @@ ggsave("figures/graphique_4.jpeg", plot = g4, width = 6, height = 4)
 #### Au niveau des pays
 
 ```{r include=FALSE}
+# Manipulations :
 stats_vacc_pays <- df_countries %>% 
   group_by(name, continent) %>% 
   summarise(Minimum = min(daily_vaccinations_per_million, na.rm = TRUE),
@@ -212,7 +212,7 @@ stats_vacc_pays$name <-  stats_vacc_pays$name %>%
   replace_na("Timor") #Francisation ne s'est pas effectuée, donc ajouter le Timor manuellement.
 ```
 
-```{r stats_pays, fig.cap="Statistiques vaccinales, par pays"}
+```{r statspays, fig.cap="Statistiques vaccinales, par pays"}
 kable(stats_vacc_pays, caption = "Statistiques vaccinales, par pays") %>% 
   kable_styling(full_width = FALSE, font_size = 12) %>% 
   scroll_box(width = "720px", height = "400px")
@@ -225,23 +225,216 @@ kable(stats_vacc_pays, caption = "Statistiques vaccinales, par pays") %>%
   save_kable("figures/table_4.png")
 ```
 
+<br>
+
 ::: {style="text-align: justify"}
-Les statistiques présentées dans les tableaux \@ref(tab:stats_cont) et \@ref(tab:stats_pays) et le graphique \@ref(fig:statsvacc) mettent en évidence l'écart important entre les pays et les continents en ce qui a trait au nombre de doses administrées quotidiennement (par million d'habitants). Plus précisément, l'Afrique est clairement le continent qui fait moins bonne à ce chapitre, et ce tant en se basant sur la moyenne quotidienne (1301 doses) que la médiane (402 doses). Ce continent fait véritablement bande à part comparativement aux autres. Du surcroît, @nachega2021addressing affirme qu'en plus de l'accaparement des ressources vaccinales par les pays occidentaux d'autres facteurs structurels expliquent aussi les difficultés que rencontre l'Afrique dans la distribution et l'administration des vaccins contre la COVID-19. De fait, l'hésitation vaccinale, le manque d'usines de production de vaccins locales ainsi que le manque d'infrastructures de qualité, comme les chaînes de froid pour les vaccins de type ARN messager, notamment au sein de régions éloignées des centres urbains constituent des éléments structuraux qui ralentissent le rythme de la campagne de vaccination pour contrer la pandémie de coronavirus en Afrique. 
+Les statistiques présentées dans les tableaux \@ref(tab:statscont) et \@ref(tab:statspays) et le graphique \@ref(fig:statsvacc) mettent en évidence l'écart important entre les pays et les continents en ce qui a trait au nombre de doses administrées quotidiennement (par million d'habitants). Plus précisément, l'Afrique est clairement le continent qui fait moins bonne à ce chapitre, et ce tant en se basant sur la moyenne quotidienne (1301 doses) que la médiane (402 doses). Ce continent fait véritablement bande à part comparativement aux autres. Du surcroît, @nachega2021addressing affirme qu'en plus de l'accaparement des ressources vaccinales par les pays occidentaux d'autres facteurs structurels expliquent aussi les difficultés que rencontre l'Afrique dans la distribution et l'administration des vaccins contre la COVID-19. De fait, l'hésitation vaccinale, le manque d'usines de production de vaccins locales ainsi que le manque d'infrastructures de qualité, comme les chaînes de froid pour les vaccins de type ARN messager, notamment au sein de régions éloignées des centres urbains constituent des éléments structuraux qui ralentissent le rythme de la campagne de vaccination pour contrer la pandémie de coronavirus en Afrique.
 :::
 
-### people_fully_vaccinated_per_hundred  ***FAIRE UNE CARTE ICI POUR LES PAYS***
-
+### people_fully_vaccinated_per_hundred ***FAIRE UNE CARTE ICI POUR LES PAYS***
 
 ### total_booster_per_hundred
 
 ## Exploration de la variable liée à la population
 
-###
+::: {style="text-align: justify"}
+Cette section a pour objectif de présenter des statistiques descriptives en lien avec la variable `population`, tirée de la banque de données *Gapminder-Population*.
+:::
+
+### Nombre d'habitants au total pour l'année 2021
+
+#### Au niveau des continents
+
+```{r include=FALSE}
+stats_pop_continents <- df_countries_2021 %>% 
+  group_by(continent) %>% 
+  summarise(Minimum = min(Population, na.rm = TRUE),
+            Maximum = max(Population, na.rm = TRUE),
+            Moyenne = mean(Population, na.rm = TRUE),
+            Médiane = median(Population, na.rm = TRUE))
+
+colnames(stats_pop_continents) <- c("Continent", "Minimum", "Maximum", "Moyenne", "Médiane")
+
+stats_pop_continents$Continent <- str_replace_all(stats_pop_continents$Continent, c("Africa" = "Afrique",
+                                                                                    "Americas" = "Amériques",
+                                                                                    "Asia" = "Asie",
+                                                                                    "Oceania" = "Océanie"))
+```
+
+```{r popcont, fig.cap="Statistiques populationnelles, par continent"}
+kable(stats_pop_continents, caption = "Statistiques populationnelles, par continent") %>% 
+  kable_styling(full_width = FALSE, font_size = 12) 
+```
+
+```{r include=FALSE}
+kable(stats_pop_continents, caption = "Statistiques populationnelles, par continent") %>% 
+  kable_styling(full_width = FALSE, font_size = 12) %>% 
+  save_kable("figures/table_8.png")
+```
+
+```{r popdata, fig.cap="Données populationnelles pour l'année 2021, par continent", layout="l-body-outset", fig.width=6, fig.height=4}
+# Franciser les continents :
+
+df_countries_2021$continent <- str_replace_all(df_countries_2021$continent, c("Africa" = "Afrique",
+                                                                              "Americas" = "Amériques",
+                                                                              "Asia" = "Asie",
+                                                                              "Oceania" = "Océanie"))
+
+# Graphique :
+
+g7 <- ggplot(data = df_countries_2021,
+       aes(x = continent, y = Population, fill = continent)) +
+  
+  geom_boxplot(alpha = 0.7) +
+  
+  coord_cartesian(ylim = c(0, 360000000)) +    #zoomer sur les données, Chine et Inde sont trop éloignées.
+  
+  scale_x_discrete(name = "") +
+  scale_y_continuous(name = "Nombre d'habitants",
+                     breaks = c(0, 100000000, 200000000, 300000000), 
+                     labels = c("0", "100 000 000", "200 000 000", "300 000 000")) +
+  scale_fill_manual(values = c("#63ccca", "#7ae582", "#313b72", "#462255", "#397367")) +
+  
+  labs(title = "Données populationnelles pour l'année 2021, par continent",
+       caption = "N.B. Les données 2021 pour la Chine et l'Inde ne sont pas illustrées dans ce graphique.<br>Ces pays possèdent respectivement 1 444 216 102 et 1 393 409 033 habitants") +
+  
+  theme_ipsum() + 
+  theme(plot.title = element_text(size = 12, hjust = 0.5, vjust = 4),
+        plot.caption = element_markdown(size = 6),
+        plot.background = element_rect(fill = "white", color = "white"),
+        panel.background = element_rect(fill = "white", color = "white", size = 0.5, linetype = "solid"),
+        legend.position = "")
+
+g7 <- g7 + annotate("text",
+                    x = "Océanie",
+                    y = 27000000,
+                    label = "Australie",
+                    size = 2,
+                    hjust = -0.25) + 
+           annotate("text",
+                    x = "Amériques",
+                    y = 336000000, 
+                    label = "États-Unis",
+                    size = 2,
+                    hjust = -0.20) +
+           annotate("text",
+                    x = "Europe",
+                    y = 148000000,
+                    label = "Russie", 
+                    size = 2,
+                    hjust = -0.25) +
+           annotate("text",
+                    x = "Asie",
+                    y = 279000000,
+                    label = "Indonésie",
+                    size = 2,
+                    hjust = -0.20) +
+           annotate("text",
+                    x = "Afrique",
+                    y = 213000000,
+                    label = "Nigéria",
+                    size = 2, 
+                    hjust = -0.25)
+
+g7
+```
+
+```{r include=FALSE}
+ggsave("figures/graphique_7.jpeg", plot = g7, width = 6, height = 4)
+```
+
+#### Au niveau des pays
+
+```{r include=FALSE}
+# Manipulations
+
+stats_pop_pays <- df_countries_2021 %>% 
+  group_by(name) %>% 
+  summarise(`Population totale 2021` = max(Population))
+
+colnames(stats_pop_pays) <- c("Pays", "Population totale 2021")
+
+#Franciser les noms des pays :
+
+stats_pop_pays <-stats_pop_pays %>% 
+    mutate(Pays = countryname(Pays, destination = "un.name.fr")) 
+
+stats_pop_pays$Pays <- stats_pop_pays$Pays %>% 
+  replace_na("Timor") #Francisation ne s'est pas effectuée, donc ajouter le Timor manuellement.
+```
+
+```{r poppays, fig.cap="Statistiques populationnelles, par pays"}
+kable(stats_pop_pays, caption = "Statistiques populationnelles, par pays") %>% 
+  kable_styling(full_width = FALSE, font_size = 12) %>% 
+  scroll_box(width = "720px", height = "400px")
+```
+
+```{r include=FALSE}
+kable(stats_pop_pays, caption = "Statistiques populationnelles, par pays") %>% 
+  kable_styling(full_width = FALSE, font_size = 12) %>% 
+  scroll_box(width = "720px", height = "400px") %>% 
+  save_kable("figures/table_9.png")
+```
+
+COURT COMMENTAIRE SUR LES DONNÉES POPULATIONNELLES ET LE GRAPHIQUE.
 
 ## Exploration des variables liées au PIB
 
-###
+::: {style="text-align: justify"}
+Cette section a pour objectif de mettre de l'avant quelques statistiques descriptives liées à l'état de l'économique des pays et des continents pour l'année 2021, à partir de la banque de données *Gapminder-PIB*.
+:::
 
-## Exploration de la variable liée à l'espérance de vie 
+### Au niveau des continents
 
-###
+```{r include=FALSE}
+# Manipulations
+
+stats_gdp_continents <- df_countries_2021 %>% 
+  group_by(continent) %>% 
+  summarise(Minimum = min(GDP.per.capita.growth...., na.rm = TRUE),
+            Maximum = max(GDP.per.capita.growth...., na.rm = TRUE),
+            Moyenne = mean(GDP.per.capita.growth...., na.rm = TRUE),
+            Médiane = median(GDP.per.capita.growth...., na.rm = TRUE),
+            SD = sd(GDP.per.capita.growth...., na.rm = TRUE)) %>% 
+  ungroup()
+
+stats_gdp_continents$SD <- round(stats_gdp_continents$SD, 2) 
+
+stats_gdp_continents$Moyenne <- round(stats_gdp_continents$Moyenne, 2)
+
+colnames(stats_gdp_continents) <- c("Continent", "Minimum", "Maximum", "Moyenne", "Médiane", "Écart-type")
+```
+
+```{r gdpcont, fig.cap="Statistiques PIB, par continent"}
+kable(stats_gdp_continents, caption = "Statistiques PIB, par continent") %>% 
+  kable_styling(full_width = FALSE, font_size = 12) 
+```
+
+```{r include=FALSE}
+kable(stats_gdp_continents, caption = "Statistiques PIB, par continent") %>% 
+  kable_styling(full_width = FALSE, font_size = 12) %>% 
+  save_kable("figures/table_9.png")
+```
+
+#### Au niveau des pays 
+
+```{r include=FALSE}
+#Manipulations
+
+stats_gdp_pays <- df_countries_2021 %>% 
+  distinct(continent, name, GDP.per.capita.growth....) %>% 
+  drop_na(GDP.per.capita.growth....)
+```
+
+```{r gdpdata, fig.cap="Données PIB par habitant pour l'année 2021, par continent", layout="l-body-outset", fig.width=6, fig.height=4}
+# Graphique :
+
+ggplot(data = stats_gdp_pays,
+       aes(x = GDP.per.capita.growth...., y = name, color = continent)) +
+  geom_histogram()
+
+```
+
+## Exploration de la variable liée à l'espérance de vie
+
+### 
