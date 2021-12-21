@@ -1,7 +1,7 @@
 ---
 title: "À propos"
 description: |
-     En lisant la page ci-dessous, vous pourrez en apprendre plus sur Gabrielle Desrosiers-Brisebois, l'étudiante derrière ce rapport analytique portant sur la vaccination pour contrer la pandémie de COVID-19.
+     En lisant la page ci-dessous, vous pourrez en apprendre davantage sur Gabrielle Desrosiers-Brisebois, l'étudiante derrière ce rapport analytique portant sur la vaccination pour contrer la pandémie de COVID-19.
 toc: false
 ---
 
@@ -9,7 +9,7 @@ toc: false
 ## Biographie 
 
 <div style="text-align: justify"> J'ai complété mon baccalauréat en science politique à l'Université de Montréal à la fin de l'année 2020. Je suis présentement étudiante à la maîtrise en science politique à l'Université de Montréal, sous la direction du professeur Jean-François Godbout. Je participe également au groupe de recherche [_Complex Data Lab_](https://politicalpolarization.github.io/) en collaboration avec l'Université McGill. </div>
-
+<br>
 Mes intérêts de recherche portent notamment sur :
 
 * Les institutions politiques canadiennes et américaines;
