@@ -1,8 +1,8 @@
 ---
-title: "Titre de votre premier R Markdown"
+title: "Introduction"
 description: | 
-  Petite description du contenu de cette page
-date: "`r Sys.Date()`"
+  Cette page contient une description globale du projet ainsi qu'une carte qui met en évidence le pourcentage d'individus ayant reçu au moins une dose de vaccin au sein du continent africain.
+date: "2021-12-22"
 # Modifier les détails que vous voulez
 author:
   - first_name: "Gabrielle"
@@ -29,20 +29,146 @@ output: distill::distill_article
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Il est maintenant le temps de décrire votre projet avant de passer au document suivant, soit l'importation et la manipulation des données. 
+```{r include=FALSE}
+#Importation des scripts pour télécharger, nettoter et ouvrir les données :
 
-Il s'agit d'un fichier R Markdown traditionnel, évidemment. Je vous conseille d'écrire cette partie en dernier, une fois que vous aurez déjà vos résultats et figures afin d'éviter de réécrire cette page plusieurs fois.
+source("R/telechargement_donnees.R", local = knitr::knit_global(), encoding = "UTF-8")
+source("R/manipulation_donnees.R", local = knitr::knit_global(), encoding = "UTF-8")
+source("R/ouverture_donnees_processed.R", local = knitr::knit_global(), encoding = "UTF-8")
 
-## Inclure des graphiques ou des images pour présenter les ensembles de données.
+# Appeler les packages requis :
 
-Comme la Figure \@ref(fig:diam) par exemple:
-
-```{r diam, layout="l-body-outset", fig.width=6, fig.height=1.5, fig.cap="Beaucoup de diamants"}
-library(ggplot2)
-ggplot(diamonds, aes(carat, price)) + geom_smooth() +
-  facet_grid(~ cut)
+library(magick)
+library(webshot)
+library(kableExtra)
+library(hrbrthemes)
+library(plotly)
+library(zoo)
+library(countrycode)
+library(ggtext)
+library(moderndive)
+library(broom)
+library(data.table)
+library(htmlwidgets)
+library(viridis)
+library(maps)
+library(leaflet)
 ```
 
-### Différents niveaux de titres
+::: {style="text-align: justify"}
+Le présent rapport analytique est effectué comme exigence finale dans le cadre du cours **FAS1002: Initiation à la programmation en sciences sociales**. En ce sens, ce dernier porte principalement sur la présentation et l'analyse de données liées à la vaccination entourant la pandémie de COVID-19, en mettant tout particulièrement l'accent sur l'iniquité vaccinale à travers la planète. <br> En plus de la page d'introduction, le présent rapport est divisé est plusieurs sections distinctes, soit (i) [Données](2-import.html), (ii) [Exploration](3-exploration.html), (iii) [Analyses](4-analyse.html) et (iv) [Contact](contact.html).
+:::
 
-Dans vos différents documents, assurez-vous de bien utiliser Markdown et autres. 
+## Un coup d'œil sur l'Afrique
+
+```{r include=FALSE}
+# Sélectionner seulement les observations les plus récentes :
+
+df_map <- df_countries 
+  
+setDT(df_map)  
+  
+df_map <- df_map[order(-date), .SD[1], by = name] #données les plus récentes, par pays.  
+
+# Données géographiques mondiales :
+
+data_world_map <- map_data("world") 
+
+names(data_world_map)[names(data_world_map) == "region"] <- "name"
+
+# Harmoniser les noms des pays :
+
+data_world_map$name <- str_replace_all(data_world_map$name, c("Republic of Congo" = "Congo",
+                                                              "Swaziland" = "Eswatini",
+                                                              "Ivory Coast" = "Cote d'Ivoire",
+                                                              "of the" = "of"))
+
+
+df_map <- left_join(df_map,
+                     data_world_map,
+                     by = "name")
+
+df_map <- df_map %>% 
+  filter(continent %in% "Africa")
+```
+
+```{r map1, fig.cap="Pourcentage d'individus ayant reçu au moins une dose de vaccin, en Afrique", layout="l-body-outset", fig.width=6, fig.height=4}
+map1 <- ggplot(data = df_map, 
+       aes(x = long, y = lat, group = group)) +
+  
+  geom_polygon(aes(fill = people_vaccinated_per_hundred), color = "black", alpha = 0.9) +
+  
+  scale_fill_gradient2(name = "Pourcentage d'individus vaccinés",
+                       breaks = c(0, 25, 50, 75, 100),
+                       limits = c(0, 100),
+                       guide = guide_colorbar(title.position = "top",
+                                              title.hjust = 0.5,
+                                              ticks = FALSE,
+                                              nbin = 4,
+                                              barheight = 0.5,
+                                              barwidth = 10),
+                       low = "white",
+                       mid = "#48cae4",
+                       high = "#21295c") +
+  
+  coord_map() +
+  
+  labs(title = "Pourcentage d'individus ayant reçu au moins une dose de vaccin en Afrique",
+       subtitle = "En fonction des données les plus récentes, par pays") +
+  
+  theme_void() +
+  theme(plot.title = element_text(size = 12, hjust = 0.5, vjust = 1, family = "Arial Narrow", face = "bold"),
+        plot.subtitle = element_text(size = 10, hjust = 0.5, vjust = 2, family = "Arial Narrow"),
+        plot.margin = margin(0.5,0,2,0,"cm"),
+        legend.position = "bottom",
+        legend.text = element_text(family = "Arial Narrow", size = 8),
+        legend.title = element_text(family = "Arial Narrow", size = 9, face = "bold"))
+
+map1
+```
+
+```{r include=FALSE}
+ggsave("figures/mappe_1.jpeg", plot = map1, width = 6, height = 4)
+```
+
+::: {style="text-align: justify"}
+La carte \@ref(fig:map1) permet de voir la situation vaccinale des pays africains en fonction des données les plus récentes disponibles pour chacun d'entre eux. De sorte, cette carte dénote clairement que les pourcentages d'individus ayant reçu au moins une dose de vaccin sont très faibles en Afrique. À titre d'exemple, un seul pays africain possède un taux de vaccination de plus de 80 %, l'archipel des Seychelles. Cela dit, la faiblesse de l'administration des vaccins est particulière marquée dans la région de l'Afrique subsaharienne, où les taux de vaccination se situent pour la plupart en dessous de 25 %. Bref, avec ces informations désormais étayées, ce rapport analytique examinera certains facteurs pouvant expliquer la situation vaccinale actuelle en Afrique, qui constitue le continent le plus en retard dans la distribution et l'injection de doses de vaccins contre la COVID-19. Par ailleurs, le tableau \@ref(tab:pervacc) ci-dessous permet de voir de manière détaillée le pourcentage d'individus ayant reçu au moins une dose de vaccin pour l'ensemble des pays, en fonction de leurs données les plus récentes disponibles.
+:::
+
+```{r include=FALSE}
+# Manipulations :
+
+percent_vacc <- df_countries
+
+percent_vacc <- percent_vacc[order(-date), .SD[1], by = name]
+
+percent_vacc <- percent_vacc %>% 
+  select(continent, name, people_vaccinated_per_hundred)
+
+# Changements noms :
+
+colnames(percent_vacc) <- c("Continent", "Pays", "Vaccination (%)")
+
+percent_vacc <-percent_vacc %>% 
+    mutate(Pays = countryname(Pays, destination = "un.name.fr")) 
+
+percent_vacc$Pays <- percent_vacc$Pays %>% 
+  replace_na("Timor") #Francisation ne s'est pas effectuée, donc ajouter le Timor manuellement.
+
+percent_vacc$Continent <- str_replace_all(percent_vacc$Continent, c("Africa" = "Afrique",
+                                                                    "Americas" = "Amériques",
+                                                                    "Asia" = "Asie",
+                                                                    "Oceania" = "Océanie"))
+```
+
+```{r pervacc, fig.cap="Pourcentage d'individus ayant reçu au moins une dose de vaccin, par pays"}
+kable(percent_vacc, caption = "Pourcentage d'individus ayant reçu au moins une dose de vaccin, par pays") %>% 
+  kable_styling(full_width = FALSE, font_size = 12) %>%
+  scroll_box(width = "720px", height = "400px")
+```
+
+```{r include=FALSE, fig.cap="Pourcentage d'individus ayant reçu au moins une dose de vaccin, par pays"}
+kable(percent_vacc, caption = "Pourcentage d'individus ayant reçu au moins une dose de vaccin, par pays") %>% 
+  kable_styling(full_width = FALSE, font_size = 12) %>%
+  save_kable("figures/table_1.png")
+```
