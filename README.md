@@ -1,6 +1,6 @@
 # Résumé du répertoire:
 
-Ce répertoire contient un rapport analytique portant sur la vaccination contre la COVID-19. Celui a été créé sur RStudio grâce au packages [Distill](https://rstudio.github.io/distill/).
+Ce répertoire contient un rapport analytique portant sur la vaccination contre la COVID-19. Celui a été créé sur RStudio grâce au package [Distill](https://rstudio.github.io/distill/).
 
 ## Packages requis:
 
