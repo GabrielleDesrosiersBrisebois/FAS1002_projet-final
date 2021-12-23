@@ -2500,15 +2500,15 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 Show code
 </summary>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>map1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>df_map</span>, 
-       <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>long</span>, y <span class='op'>=</span> <span class='va'>lat</span>, group <span class='op'>=</span> <span class='va'>group</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>map1</span> <span class='op'>&lt;-</span> <span class='fu'>ggplot</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>df_map</span>, 
+       <span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>long</span>, y <span class='op'>=</span> <span class='va'>lat</span>, group <span class='op'>=</span> <span class='va'>group</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
   
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_polygon.html'>geom_polygon</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>fill <span class='op'>=</span> <span class='va'>people_vaccinated_per_hundred</span><span class='op'>)</span>, color <span class='op'>=</span> <span class='st'>"black"</span>, alpha <span class='op'>=</span> <span class='fl'>0.9</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>geom_polygon</span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span>fill <span class='op'>=</span> <span class='va'>people_vaccinated_per_hundred</span><span class='op'>)</span>, color <span class='op'>=</span> <span class='st'>"black"</span>, alpha <span class='op'>=</span> <span class='fl'>0.9</span><span class='op'>)</span> <span class='op'>+</span>
   
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_gradient.html'>scale_fill_gradient2</a></span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"Pourcentage d'individus vaccinés"</span>,
+  <span class='fu'>scale_fill_gradient2</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"Pourcentage d'individus vaccinés"</span>,
                        breaks <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>25</span>, <span class='fl'>50</span>, <span class='fl'>75</span>, <span class='fl'>100</span><span class='op'>)</span>,
                        limits <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>100</span><span class='op'>)</span>,
-                       guide <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/guide_colourbar.html'>guide_colorbar</a></span><span class='op'>(</span>title.position <span class='op'>=</span> <span class='st'>"top"</span>,
+                       guide <span class='op'>=</span> <span class='fu'>guide_colorbar</span><span class='op'>(</span>title.position <span class='op'>=</span> <span class='st'>"top"</span>,
                                               title.hjust <span class='op'>=</span> <span class='fl'>0.5</span>,
                                               ticks <span class='op'>=</span> <span class='cn'>FALSE</span>,
                                               nbin <span class='op'>=</span> <span class='fl'>4</span>,
@@ -2518,18 +2518,18 @@ Show code
                        mid <span class='op'>=</span> <span class='st'>"#48cae4"</span>,
                        high <span class='op'>=</span> <span class='st'>"#21295c"</span><span class='op'>)</span> <span class='op'>+</span>
   
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/coord_map.html'>coord_map</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>coord_map</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span>
   
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Pourcentage d'individus ayant reçu au moins une dose de vaccin en Afrique"</span>,
+  <span class='fu'>labs</span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Pourcentage d'individus ayant reçu au moins une dose de vaccin en Afrique"</span>,
        subtitle <span class='op'>=</span> <span class='st'>"En fonction des données les plus récentes, par pays"</span><span class='op'>)</span> <span class='op'>+</span>
   
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_void</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>plot.title <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>12</span>, hjust <span class='op'>=</span> <span class='fl'>0.5</span>, vjust <span class='op'>=</span> <span class='fl'>1</span>, family <span class='op'>=</span> <span class='st'>"Arial Narrow"</span>, face <span class='op'>=</span> <span class='st'>"bold"</span><span class='op'>)</span>,
-        plot.subtitle <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>10</span>, hjust <span class='op'>=</span> <span class='fl'>0.5</span>, vjust <span class='op'>=</span> <span class='fl'>2</span>, family <span class='op'>=</span> <span class='st'>"Arial Narrow"</span><span class='op'>)</span>,
-        plot.margin <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>margin</a></span><span class='op'>(</span><span class='fl'>0.5</span>,<span class='fl'>0</span>,<span class='fl'>2</span>,<span class='fl'>0</span>,<span class='st'>"cm"</span><span class='op'>)</span>,
+  <span class='fu'>theme_void</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>theme</span><span class='op'>(</span>plot.title <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>12</span>, hjust <span class='op'>=</span> <span class='fl'>0.5</span>, vjust <span class='op'>=</span> <span class='fl'>1</span>, family <span class='op'>=</span> <span class='st'>"Arial Narrow"</span>, face <span class='op'>=</span> <span class='st'>"bold"</span><span class='op'>)</span>,
+        plot.subtitle <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>10</span>, hjust <span class='op'>=</span> <span class='fl'>0.5</span>, vjust <span class='op'>=</span> <span class='fl'>2</span>, family <span class='op'>=</span> <span class='st'>"Arial Narrow"</span><span class='op'>)</span>,
+        plot.margin <span class='op'>=</span> <span class='fu'>margin</span><span class='op'>(</span><span class='fl'>0.5</span>,<span class='fl'>0</span>,<span class='fl'>2</span>,<span class='fl'>0</span>,<span class='st'>"cm"</span><span class='op'>)</span>,
         legend.position <span class='op'>=</span> <span class='st'>"bottom"</span>,
-        legend.text <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>family <span class='op'>=</span> <span class='st'>"Arial Narrow"</span>, size <span class='op'>=</span> <span class='fl'>8</span><span class='op'>)</span>,
-        legend.title <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/element.html'>element_text</a></span><span class='op'>(</span>family <span class='op'>=</span> <span class='st'>"Arial Narrow"</span>, size <span class='op'>=</span> <span class='fl'>9</span>, face <span class='op'>=</span> <span class='st'>"bold"</span><span class='op'>)</span><span class='op'>)</span>
+        legend.text <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>family <span class='op'>=</span> <span class='st'>"Arial Narrow"</span>, size <span class='op'>=</span> <span class='fl'>8</span><span class='op'>)</span>,
+        legend.title <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>family <span class='op'>=</span> <span class='st'>"Arial Narrow"</span>, size <span class='op'>=</span> <span class='fl'>9</span>, face <span class='op'>=</span> <span class='st'>"bold"</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='va'>map1</span>
 </code></pre>

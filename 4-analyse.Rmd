@@ -29,7 +29,7 @@ output: distill::distill_article
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## Analyse statistique: individus pleinement vaccinés et économie
+## Analyse \#1: Individus pleinement vaccinés et économie
 
 ::: {style="text-align: justify"}
 Dans la littérature portant sur la vaccination contre la COVID-19, quelques auteurs (p. ex. @roghani2021global et @dongarwar2021covid) se sont déjà penchés sur le rôle d'indicateurs économiques dans l'efficacité de la distribution des vaccins. Or, ces études ont surtout été effectuées à un stage plus précoce de la campagne de vaccination. En ce sens, il est donc intéressant d'explorer le lien entre la richesse des États, opérationnalisée par le biais de la variable `Income.per.person`, et le nombre d'individus pleinement vaccinés par 100 habitants, qui est quant à lui opérationnalisée grâce à la variable `people_fully_vaccinated_per_hundred`. Ainsi, l'hypothèse soutenue dans cette analyse est qu'un niveau de revenu moyen plus élevé devrait être positivement corrélé à un taux d'individus pleinement vaccinés contre la COVID-19.

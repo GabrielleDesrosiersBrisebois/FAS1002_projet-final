@@ -42,17 +42,13 @@ library(magick)
 library(webshot)
 library(kableExtra)
 library(hrbrthemes)
-library(plotly)
 library(zoo)
 library(countrycode)
 library(ggtext)
 library(moderndive)
 library(broom)
 library(data.table)
-library(htmlwidgets)
-library(viridis)
 library(maps)
-library(leaflet)
 ```
 
 ::: {style="text-align: justify"}
