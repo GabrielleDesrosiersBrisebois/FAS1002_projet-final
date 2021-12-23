@@ -1,7 +1,7 @@
 ---
 title: "Rapport analytique portant sur la vaccination contre la COVID-19"
 description: |
- Ce site a été conçu dans le cadre du cours **FAS1002: Initiation à la programmation en sciences sociales**. Ce dernier vise à présenter et à analyser les données liées à la vaccination contre la COVID-19. 
+ Ce site a été conçu dans le cadre du cours **FAS1002: Initiation à la programmation en sciences sociales**. Ce dernier contienent mon rapport final et il vise à présenter et à analyser les données liées à la vaccination contre la COVID-19. 
 citation_url: https://gabrielledesrosiersbrisebois.github.io/FAS1002_projet-final/ 
 bibliography: references.bib  
 site: distill::distill_website
@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ### À l'échelle mondiale
 
 ```{r worldvacc, fig.cap="Évolution du nombre de doses administrées à l'échelle mondiale", layout="l-body-outset", fig.width=6, fig.height=4}
-#Manipulations :
+# Manipulations :
 
 df_world <- df_world %>% 
   mutate(month = month(date)) %>% 
@@ -54,6 +54,8 @@ g1 <- ggplot(data = sum_world_vaccination,
   theme_ipsum() +
   theme(plot.title = element_text(size = 14, hjust = 0.5, vjust = 5),
         axis.text.x = element_text(size = 9, angle = 30, hjust = 0.7, vjust = 0.7),
+        axis.text.y = element_text(size = 9),
+        axis.title.y = element_text(size = 8),
         axis.ticks.x = element_line(),
         plot.background = element_rect(fill = "white", color = "white"),
         panel.background = element_rect(fill = "white", color = "white", size = 0.5, linetype = "solid"))
@@ -62,17 +64,19 @@ g1
 ```
 
 ```{r include=FALSE}
-ggsave("figures/figure_1.jpeg", plot = g1, width = 6, height = 4)
+ggsave("figures/graphique_1.jpeg", plot = g1, width = 6, height = 4)
 ```
 
-<div style="text-align: justify"> Le graphique \@ref(fig:worldvacc) permet d'illustrer le nombre de doses de vaccin contre la COVID-19 administrées, par mois, à l'échelle mondiale. En ce sens, le nombre de doses administrées n'a cessé de s'accroître entre les mois de décembre 2020 et de juin 2021. Le mois d'août 2021 marque quant à lui le sommet pour le nombre de doses administrées avec près de 1 200 000 000. Selon @felter_2021 du *Council on Foreign Relations*, l'approbation de plus d'une vingtaine de vaccins contre le plus récent coronavirus - incluant notamment les vaccins des compagnies *Pfizer BioNTech*, *Moderna*, *Sinopharm* et *Johnson & Johnson* - ainsi que la coopération et les investissements provenant de plusieurs secteurs tels que les compagnies privées, les gouvernements, les organisations internationales et les instituts de recherche ont permis de mettre sur pied plusieurs vaccins efficaces pouvant être déployés massivement et rapidement. Certes, l'administration des doses, à l'échelle de la planète, connaît tout de même un certain déclin depuis septembre 2021. </div>
+::: {style="text-align: justify"}
+Le graphique \@ref(fig:worldvacc) permet d'illustrer le nombre de doses de vaccin contre la COVID-19 administrées, par mois, à l'échelle mondiale. En ce sens, le nombre de doses administrées n'a cessé de s'accroître entre les mois de décembre 2020 et de juin 2021. Le mois d'août 2021 marque, quant à lui, le sommet pour le nombre de doses administrées avec tout près de 1 200 000 000. Selon @felter_2021 du *Council on Foreign Relations*, l'approbation de plus d'une vingtaine de vaccins contre le plus récent coronavirus - incluant notamment les vaccins des compagnies *Pfizer BioNTech*, *Moderna*, *Sinopharm* et *Johnson & Johnson* - ainsi que la coopération internationale et les investissements provenant de plusieurs secteurs tels que les compagnies privées, les gouvernements, les organisations multilatérales et les instituts de recherche ont permis de mettre sur pied plusieurs vaccins efficaces pouvant être déployés massivement et rapidement. Certes, l'administration des doses à l'échelle de la planète connaît tout de même un certain déclin depuis septembre 2021.
+:::
 
 ### Au niveau continental[^1]
 
 [^1]: L'Amérique du Nord et l'Amérique du Sud sont regroupées sous la catégorie "Amériques".
 
 ```{r contvacc, fig.cap="Évolution du nombre de doses administrées à l'échelle continentale", layout="l-body-outset", fig.width=6, fig.height=4}
-#Manipulations :
+# Manipulations :
 
 df_continents <- df_continents %>% 
   mutate(month = month(date)) %>% 
@@ -89,7 +93,7 @@ sum_continents_vaccination$sum_daily_vaccinations <- round(sum_continents_vaccin
 
 sum_continents_vaccination$date <- as_date(as.yearmon(sum_continents_vaccination$date))
 
-#Graphique :
+# Graphique :
 
 options(scipen = 10) #pour enlever la notation mathématique.
 
@@ -114,6 +118,8 @@ g2 <- ggplot(data = sum_continents_vaccination,
   theme_ipsum() +
   theme(plot.title = element_text(size = 14, hjust = 0.5, vjust = 5),
         axis.text.x = element_text(size = 9, angle = 30, hjust = 0.7, vjust = 0.7),
+        axis.text.y = element_text(size = 9),
+        axis.title.y = element_text(size = 8),
         axis.ticks.x = element_line(),
         plot.background = element_rect(fill = "white", color = "white"),
         panel.background = element_rect(fill = "white", color = "white", size = 0.5, linetype = "solid"),
@@ -125,10 +131,12 @@ g2
 ```
 
 ```{r include=FALSE}
-ggsave("figures/figure_2.jpeg", plot = g2, width = 6, height = 4)
+ggsave("figures/graphique_2.jpeg", plot = g2, width = 6, height = 4)
 ```
 
-<div style="text-align: justify"> Malgré les nombres absolus de doses de vaccins pour contrer la pandémie de COVID-19 qui ont été déployées depuis le mois de décembre 2020, le graphique \@ref(fig:contvacc) met en évidence la disparité dans le déploiement de ces doses. L'iniquité dans l'administration des doses est particulièrement marquée au niveau du continent africain. En dépit du fait que l'Afrique soit le second continent le plus populeux, dernière l'Asie, ce dernier maintient un nombre de doses administrées par mois similaire à celui de l'Océanie, et ce depuis le début de la campagne de vaccination contre la COVID-19 à l'échelle mondiale. *A contrario*, l'Europe qui compte plus d'une fois et demie moins d'habitants que l'Afrique a visiblement bénéficié d'une quantité impressionnante de vaccins compte tenu de sa population générale. À cet égard, plusieurs chercheurs (p. ex. @rutschman2021covid, @daoudi_2020) ont qualifié la stratégie des pays les plus fortunés de la planète de « nationalisme vaccinal ». Le nationalisme vaccinal est notamment décrit par @zhou2021vaccine comme le fait de « réserver des millions de doses de nouveaux vaccins pour un usage domestique pendant une crise de santé publique transnationale ». Ce type de comportements étatiques a donc pour effet d'entraîner une course entre les États pour être les premiers sur les marchés et pour obtenir des droits d'accès prioritaires dans un contexte de production de doses limitées. À cet effet, la journaliste du *Guardian*, Julia @kollewe2021pfizer a révélé que l'Union européenne a réservé 300 millions de doses auprès de *Pfizer BioNTech*, 310 millions auprès de *Moderna* (avec des options pour 150 millions de doses supplémentaires en 2022) et jusqu'à 400 millions de doses respectivement auprès de *Johnson & Johnson* et d'*AstraZeneca*. </div>   
+::: {style="text-align: justify"}
+Malgré les nombres absolus de doses de vaccins pour contrer la pandémie de COVID-19 qui ont été déployées depuis le mois de décembre 2020, le graphique \@ref(fig:contvacc) met en évidence la disparité dans le déploiement de ces doses. L'iniquité dans l'administration des doses est particulièrement marquée au niveau du continent africain. En dépit du fait que l'Afrique soit le second continent le plus peuplé, derrière l'Asie, ce dernier maintient un nombre de doses administrées par mois similaire à celui de l'Océanie, et ce depuis le début de la campagne de vaccination contre la COVID-19. *A contrario*, l'Europe, qui compte plus d'une fois et demie moins d'habitants que l'Afrique, a visiblement bénéficié d'une quantité impressionnante de vaccins au prorata de sa population générale. À cet égard, plusieurs chercheurs (p. ex. @rutschman2021covid et @daoudi_2020) ont qualifié la stratégie des pays les plus fortunés de la planète de « nationalisme vaccinal ». Le nationalisme vaccinal est notamment décrit par @zhou2021vaccine comme le fait de « réserver des millions de doses de nouveaux vaccins pour un usage domestique pendant une crise de santé publique transnationale ». Ce type de comportements étatiques a donc pour effet d'entraîner une course entre les États pour être parmi les premiers sur les marchés et pour obtenir des droits d'accès prioritaires dans un contexte de production de doses limitées. À cet effet, la journaliste du *Guardian*, Julia @kollewe2021pfizer, a révélé que l'Union européenne a réservé 300 millions de doses auprès de *Pfizer BioNTech*, 310 millions auprès de *Moderna* (avec des options pour 150 millions de doses supplémentaires en 2022) et jusqu'à 400 millions de doses respectivement auprès de *Johnson & Johnson* et d'*AstraZeneca*.
+:::
 
 <aside>
 La variable `daily_vaccinations` représente les nouvelles doses administrées par jour, lissée sur une période de 7 jours.
@@ -136,4 +144,4 @@ La variable `daily_vaccinations` représente les nouvelles doses administrées p
 
 ## Remerciements {.appendix}
 
-J'aimerais remercier [Samuel Guay](https://github.com/SamGuay) qui a donné le cours **FAS1002: Initiation à la programmation en sciences sociales**, lors de la session d'automne 2021, ainsi que l'ensemble des étudiants ayant participé activement au cours! 😊
+J'aimerais remercier [Samuel Guay](https://github.com/SamGuay) qui a donné le cours **FAS1002: Initiation à la programmation en sciences sociales**, lors de la session d'automne 2021, ainsi que les autres étudiants qui ont également participé au cours! 😊

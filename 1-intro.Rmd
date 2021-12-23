@@ -56,7 +56,10 @@ library(leaflet)
 ```
 
 ::: {style="text-align: justify"}
-Le présent rapport analytique est effectué comme exigence finale dans le cadre du cours **FAS1002: Initiation à la programmation en sciences sociales**. En ce sens, ce dernier porte principalement sur la présentation et l'analyse de données liées à la vaccination entourant la pandémie de COVID-19, en mettant tout particulièrement l'accent sur l'iniquité vaccinale à travers la planète. <br> En plus de la page d'introduction, le présent rapport est divisé est plusieurs sections distinctes, soit (i) [Données](2-import.html), (ii) [Exploration](3-exploration.html), (iii) [Analyses](4-analyse.html) et (iv) [Contact](contact.html).
+Le présent rapport analytique est effectué comme exigence finale dans le cadre du cours **FAS1002: Initiation à la programmation en sciences sociales**. Ce dernier porte principalement sur la présentation et l'analyse de données liées à la vaccination entourant la pandémie de COVID-19, tout en mettant particulièrement l'accent sur l'iniquité vaccinale à travers la planète.
+<br> 
+
+En plus de la page d'introduction, le présent rapport est divisé est plusieurs sections distinctes, soit (i) [Page d'accueil](index.html), (ii) [Données](2-import.html), (iii) [Exploration](3-exploration.html), (iV) [Analyses](4-analyse.html) et (v) [Contact](contact.html).
 :::
 
 ## Un coup d'œil sur l'Afrique
@@ -132,7 +135,7 @@ ggsave("figures/mappe_1.jpeg", plot = map1, width = 6, height = 4)
 ```
 
 ::: {style="text-align: justify"}
-La carte \@ref(fig:map1) permet de voir la situation vaccinale des pays africains en fonction des données les plus récentes disponibles pour chacun d'entre eux. De sorte, cette carte dénote clairement que les pourcentages d'individus ayant reçu au moins une dose de vaccin sont très faibles en Afrique. À titre d'exemple, un seul pays africain possède un taux de vaccination de plus de 80 %, l'archipel des Seychelles. Cela dit, la faiblesse de l'administration des vaccins est particulière marquée dans la région de l'Afrique subsaharienne, où les taux de vaccination se situent pour la plupart en dessous de 25 %. Bref, avec ces informations désormais étayées, ce rapport analytique examinera certains facteurs pouvant expliquer la situation vaccinale actuelle en Afrique, qui constitue le continent le plus en retard dans la distribution et l'injection de doses de vaccins contre la COVID-19. Par ailleurs, le tableau \@ref(tab:pervacc) ci-dessous permet de voir de manière détaillée le pourcentage d'individus ayant reçu au moins une dose de vaccin pour l'ensemble des pays, en fonction de leurs données les plus récentes disponibles.
+La carte \@ref(fig:map1) permet de voir la situation vaccinale des pays africains en fonction des données les plus récentes disponibles pour chacun d'entre eux. De sorte, cette carte dénote clairement que les pourcentages d'individus ayant reçu au moins une dose de vaccin sont très faibles en Afrique. À titre d'exemple, un seul pays africain possède un taux de vaccination de plus de 80 %, l'archipel des Seychelles. Cela dit, la faiblesse au niveau de l'administration des vaccins est particulièrement marquée dans la région de l'Afrique subsaharienne, où les taux de vaccination se situent pour la plupart en dessous de 25 %. Bref, avec ces informations désormais étayées, ce rapport analytique examinera certains facteurs pouvant expliquer la situation vaccinale actuelle en Afrique, qui est le continent le plus en retard dans la distribution et l'injection de doses de vaccins contre la COVID-19. Par ailleurs, le tableau \@ref(tab:pervacc) ci-dessous permet de voir de manière détaillée le pourcentage d'individus ayant reçu au moins une dose de vaccin pour l'ensemble des pays, en fonction des données les plus récentes.
 :::
 
 ```{r include=FALSE}

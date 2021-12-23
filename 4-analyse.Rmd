@@ -1,7 +1,7 @@
 ---
 title: "Analyses statistiques"
 description: | 
-  Cette page regroupe deux analyses statistiques portant sur le niveau de couverture vaccinale contre la COVID-19 et des indicateurs socio-économiques. D'une part, le lien entre les taux de vaccination des pays et des continents et leur condition économique sera exploré. D'autre part, une analyse statistique abordant le lien entre la couverture vaccinale des pays et des continents et l'espérance de vie des citoyens sera également présentée sur cette page. Enfin, la visualisation des analyses est également présentée sur cette page.
+  Cette page regroupe deux analyses statistiques portant sur le niveau de couverture vaccinale contre la COVID-19 ainsi que sur des indicateurs socio-économiques. D'une part, le lien entre les taux d'individus entièrement vaccinés au sein des continents et leur condition économique sera exploré. D'autre part, une analyse statistique abordant le lien entre le pourcentage de doses de rappel administrées au sein des continents et le PIB par habitant sera également présentée sur cette page. Enfin, la visualisation des analyses est également disponible sur cette page.
 date: "2021-12-22"
 # Modifier les détails que vous voulez
 author:
@@ -29,9 +29,11 @@ output: distill::distill_article
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## Analyse statistique: pourcentage d'individus pleinement vaccinés et le PIB par habitant
+## Analyse statistique: individus pleinement vaccinés et économie
 
-**Si possible Gab, vérifie aussi le lien statistique entre le nombre de *boosters* administrés et le GDP per capita.**
+::: {style="text-align: justify"}
+Dans la littérature portant sur la vaccination contre la COVID-19, quelques auteurs (p. ex. @roghani2021global et @dongarwar2021covid) se sont déjà penchés sur le rôle d'indicateurs économiques dans l'efficacité de la distribution des vaccins. Or, ces études ont surtout été effectuées à un stage plus précoce de la campagne de vaccination. En ce sens, il est donc intéressant d'explorer le lien entre la richesse des États, opérationnalisée par le biais de la variable `Income.per.person`, et le nombre d'individus pleinement vaccinés par 100 habitants, qui est quant à lui opérationnalisée grâce à la variable `people_fully_vaccinated_per_hundred`. Ainsi, l'hypothèse soutenue dans cette analyse est qu'un niveau de revenu moyen plus élevé devrait être positivement corrélé à un taux d'individus pleinement vaccinés contre la COVID-19.
+:::
 
 ```{r include=FALSE}
 vacc_recent <- df_countries_2021 
@@ -41,48 +43,53 @@ setDT(vacc_recent)
 vacc_recent <-  vacc_recent[order(-date), .SD[1], by = name] #données les plus récentes, par pays.
 ```
 
-```{r relation1, fig.cap="Relation entre le revenu moyen par personne et le taux d'individus pleinement vaccinés", layout="l-body-outset", fig.width=6, fig.height=4}
+```{r relation1, fig.cap="Relation entre le revenu moyen par habitant et le taux d'individus pleinement vaccinés", layout="l-body-outset", fig.width=6, fig.height=4}
 # Graphique :
 
-g10 <- ggplot(data = vacc_recent,
+g8 <- ggplot(data = vacc_recent,
        aes(x = Income.per.person, y = people_fully_vaccinated_per_hundred, color = continent)) +
   
   geom_point(alpha = 0.8) +
   geom_smooth(method = "lm", level = 0.95, color = "#181f23") +
   
-  scale_x_continuous(name = "Revenu moyen par habitant (dollar international)",
-                     breaks = seq(0, 90000, 30000),
-                     labels = c("0", "30 000", "60 000", "90 000")) +
+  scale_x_continuous(name = "Revenu moyen par habitant (Int$)",
+                     breaks = seq(0, 115000, 25000),
+                     labels = c("0", "25 000", "50 000", "75 000", "100 000")) +
   scale_y_continuous(name = "Individus pleinement vaccinés (%)",
                      limits = c(0, 100)) +
-  scale_color_manual(values = c("Afrique" = "#63ccca", "Asie" = "#313b72", "Europe" = "#462255", "Océanie" = "#397367", "Amériques" = "#7ae582")) +
+  scale_color_manual(values = c("#63ccca", "#313b72", "#462255",  "#397367", "#7ae582"),
+                     labels = c("Afrique", "Asie", "Europe", "Océanie", "Amériques")) +
   
-  labs(title = "Relation entre le revenu moyen par personne et le taux d'individus pleinement vaccinés",
+  labs(title = "Relation entre le revenu moyen par habitant et le taux d'individus pleinement vaccinés",
        subtitle = "En fonction du taux le plus récent disponible par pays",
        color = "Continent") +
   
   theme_ipsum() +
   theme(plot.title = element_text(size = 10.5, vjust = 2),
-        plot.subtitle = element_text(size = 9, vjust = 4.2),
+        plot.subtitle = element_text(size = 9, vjust = 4.5),
         plot.background = element_rect(fill = "white", color = "white"),
         panel.background = element_rect(fill = "white", color = "white", size = 0.5, linetype = "solid"),
+        axis.text.y = element_text(size = 9),
+        axis.text.x = element_text(size = 9),
+        axis.title.y = element_text(size = 8),
+        axis.title.x = element_text(size = 8),
         legend.title.align = 0.5)
 
-g10
+g8
 ```
 
 ```{r include=FALSE}
-ggsave("figures/graphique_10.jpeg", plot = g10, width = 6, height = 4)
+ggsave("figures/graphique_8.jpeg", plot = g8, width = 6, height = 4)
 ```
 
 ::: {style="text-align: justify"}
-Le graphique \@ref(fig:relation1) illustre la forte concentration des valeurs liées à l'Afrique vers l'ordonnée à l'origine. Cela dit, il indique également la présence d'une relation statistique entre le revenu moyen par personne (en dollar international constant de 2017) et le taux d'individus pleinement vaccinés (en pourcentage). Cette relation entre les variables est positive et très forte. En revanche, ce graphique ne transmet pas d'informations portant sur le niveau de signification statistique entre ces deux variables, et il fait abstraction de variables externes pouvant venir affecter cette relation. De sorte, il est alors pertinent de ce tourner vers un modèle statistique de régression linéaire par les moindres carrés.
+À partir d'un échantillon de 210 pays, le graphique \@ref(fig:relation1) illustre la forte concentration des valeurs liées à l'Afrique vers l'ordonnée à l'origine. Cela dit, il indique également la présence d'une relation statistique entre le revenu moyen par personne (en dollar international constant de 2017) et le taux d'individus pleinement vaccinés (en pourcentage). Cette relation entre les variables est positive et très forte. En revanche, ce graphique ne transmet pas d'informations portant sur le niveau de signification statistique entre ces deux variables, et il fait abstraction de variables externes pouvant venir affecter cette relation. De sorte, il est alors pertinent de ce tourner vers un modèle statistique de régression linéaire par les moindres carrés.
 :::
 
 ### Régression linéaire multiple
 
 ::: {style="text-align: justify"}
-Cette première analyse vise à examiner le lien entre la vaccination contre la COVID-19 et la situation économique des différents États présents dans notre jeu de données. Pour y parvenir, le modèle de régression linéaire par les moindres carrés sera privilégié. Cette approche a été retenue dans le cadre de ce travail puisqu'elle permet de contrôler pour d'autres variables, en plus de minimiser la somme des erreurs au carré. En ce sens, la variable `people_fully_vaccinated_per_hundred` sera utilisée comme variable dépendante dans notre modèle. Celle-ci représente le nombre total de personnes ayant reçu toutes les doses prescrites par le protocole du vaccins qui a été administré (p. ex. le vaccin *Johnson & Johnson* requiert seulement une dose, alors que les vaccins *Moderna* et *Pfizer BioNTech* nécessites deux doses). La variable `Income.per.person` sera, quant à elle, appliquée à notre modèle comme variable indépendante. Cette dernière correspond au PIB global d'un État, divisé par la population totale de celui-ci. Pour bien capter l'effet potentiel du PIB d'un État sur le nombre de personnes pleinement vaccinées, certaines variables de contrôle sont insérées: le continent associé au pays ainsi que l'espérance de vie de celui-ci. En bref, la section qui suit présentera une brève analyse statistique étayant le lien entre le nombre d'individus entièrement vaccinés par 100 habitants ainsi que le PIB par habitants, par pays.
+Cette première analyse vise à examiner le lien entre la vaccination contre la COVID-19 et la situation économique des différents États présents dans notre jeu de données. Pour y parvenir, le modèle de régression linéaire par les moindres carrés sera privilégié. Cette approche a été retenue dans le cadre de ce travail puisqu'elle permet de contrôler pour d'autres variables, en plus de minimiser la somme des erreurs au carré. En ce sens, la variable `people_fully_vaccinated_per_hundred` sera utilisée comme variable dépendante dans notre modèle. Celle-ci représente le nombre total de personnes ayant reçu toutes les doses prescrites par le protocole du vaccin qui a été administré (p. ex. le vaccin *Johnson & Johnson* requiert seulement une dose, alors que les vaccins *Moderna* et *Pfizer BioNTech* nécessitent deux doses). La variable `Income.per.person` sera, quant à elle, appliquée à notre modèle comme variable indépendante. Cette dernière correspond au PIB global d'un État, divisé par la population totale de celui-ci. Pour bien capter l'effet potentiel du PIB par habitant sur le nombre de personnes pleinement vaccinées, certaines variables de contrôle sont insérées: le continent associé au pays ainsi que l'espérance de vie de celui-ci. En bref, la section qui suit présentera une brève analyse statistique étayant le lien entre le pourcentage d'individus entièrement vaccinés et le PIB moyen par habitant.
 :::
 
 ```{r include=FALSE}
@@ -92,8 +99,7 @@ modele1 <- lm(people_fully_vaccinated_per_hundred ~ Income.per.person + Life.exp
 
 modele1_tableau <- tidy(modele1, conf.int = TRUE) 
 
-new_modele1_tableau <- modele1_tableau %>% 
-  filter(!str_detect(term, "Intercept")) %>% 
+modele1_tableau <- modele1_tableau %>% 
   mutate(term = case_when(str_detect(term, "Life")~"Espérance de vie",
                           str_detect(term, "Income")~"Revenu par habitant (Int$)",
                           str_detect(term, "Océanie")~"Océanie",
@@ -102,32 +108,37 @@ new_modele1_tableau <- modele1_tableau %>%
                           str_detect(term, "Amériques")~"Amériques",
                           TRUE~term))
 
-new_modele1_tableau$estimate <- round(new_modele1_tableau$estimate, 5)
+modele1_tableau$estimate <- round(modele1_tableau$estimate, 5)
 
-new_modele1_tableau$std.error <- round(new_modele1_tableau$std.error, 5)
+modele1_tableau$std.error <- round(modele1_tableau$std.error, 5)
 
-new_modele1_tableau$statistic <- round(new_modele1_tableau$statistic, 5)
+modele1_tableau$statistic <- round(modele1_tableau$statistic, 5)
 
-new_modele1_tableau$p.value <- round(new_modele1_tableau$p.value, 5)
+modele1_tableau$p.value <- round(modele1_tableau$p.value, 5)
 
-new_modele1_tableau$conf.low <- round(new_modele1_tableau$conf.low, 5)
+modele1_tableau$conf.low <- round(modele1_tableau$conf.low, 5)
 
-new_modele1_tableau$conf.high <- round(new_modele1_tableau$conf.high, 5)
+modele1_tableau$conf.high <- round(modele1_tableau$conf.high, 5)
 
-colnames(new_modele1_tableau) <- c("Variable", "Coefficient", "Erreur standard", "Statistique t", "Valeur p", "Plancher int. de confiance", "Plafond int. de confiance")
+colnames(modele1_tableau) <- c("Variable", "Coefficient", "Erreur standard", "Statistique t", "Valeur p", "Plancher int. de confiance", "Plafond int. de confiance")
+
+new_modele1_tableau <- modele1_tableau 
+
+new_modele1_tableau <- new_modele1_tableau %>%  
+  filter(!str_detect(Variable, "Intercept")) #ne pas montrer l'intercept dans le graphique.
 ```
 
 #### Tableau des résultats
 
 ```{r tabreg1, fig.cap="Résultats de la première analyse de régression linéaire multiple"}
-kable(new_modele1_tableau, caption = "Résultats de la première analyse de régression linéaire multiple") %>% 
+kable(modele1_tableau, caption = "Résultats de la première analyse de régression linéaire multiple") %>% 
   kable_styling(full_width = FALSE, font_size = 12) 
 ```
 
-```{r include=FALSE}
-kable(new_modele1_tableau, caption = "Résultats de la première analyse de régression linéaire multiple") %>% 
+```{r include=FALSE, fig.cap="Résultats de la première analyse de régression linéaire multiple"}
+kable(modele1_tableau, caption = "Résultats de la première analyse de régression linéaire multiple") %>% 
   kable_styling(full_width = FALSE, font_size = 12) %>% 
-  save_kable("figures/table_12.png")
+  save_kable("figures/table_13.png")
 ```
 
 #### Visualisation des résultats
@@ -135,7 +146,7 @@ kable(new_modele1_tableau, caption = "Résultats de la première analyse de rég
 ```{r modele1, fig.cap="Relation entre le revenu moyen par personne et le taux d'individus pleinement vaccinés", layout="l-body-outset", fig.width=6, fig.height=4}
 # Graphique :
 
-g11 <- ggplot(data = new_modele1_tableau, 
+g9 <- ggplot(data = new_modele1_tableau, 
        aes(x = Coefficient,
            y = Variable,
            xmin = `Plancher int. de confiance`,
@@ -146,33 +157,35 @@ g11 <- ggplot(data = new_modele1_tableau,
   
   scale_x_continuous(name = "Coefficients et intervalles de confiance (95 %)") +
   scale_y_discrete(name = "",
-                   limits = c("Océanie", "Europe", "Amériques", "Asie", "Espérance de vie", "Revenu par habitant (Int$)")) +
+                   labels = c("Océanie", "Europe", "Amériques", "Asie", "Espérance de vie", "Revenu par habitant (Int$)")) +
   
-  labs(title = "Analyse linéaire multiple de l'effet du revenu moyen par habitant\nsur le pourcentage d'individus pleinement vaccinés",
+  labs(title = "Régression linéaire multiple de l'effet du revenu moyen\npar habitant sur le pourcentage d'individus pleinement vaccinés",
        subtitle = "En fonction des données les plus récentes disponibles, par pays") +
   
   theme_ipsum() +
   theme(plot.title = element_text(size = 11, vjust = 2),
         plot.subtitle = element_text(size = 8.5, vjust = 5),
+        axis.text.x = element_text(size = 9),
+        axis.title.x = element_text(size = 8),
         axis.text.y = element_text(size = 8),
         plot.background = element_rect(fill = "white", color = "white"),
         panel.background = element_rect(fill = "white", color = "white", size = 0.5, linetype = "solid"))
 
-g11
+g9
 ```
 
 ```{r include=FALSE}
-ggsave("figures/graphique_11.jpeg", plot = g11, width = 6, height = 4)
+ggsave("figures/graphique_9.jpeg", plot = g9, width = 6, height = 4)
 ```
 
 ::: {style="text-align: justify"}
-Le tableau \@ref(tab:tabreg1) et le graphique \@ref(fig:modele1) montrent que malgré une relation statistique qui semblait très forte entre le revenu par habitant et le taux de personnes pleinement vaccinées, telle que présentée dans le graphique \@ref(fig:relation1), certaines nuances doivent être apportées. En effet, l'ajout de variables de contrôles au modèle permet de constater que le revenu par habitant affecte le taux de gens pleinement vaccinés de manière très marginale. Par ailleurs, il est aussi possible de noter qu'un accroissement de la valeur de la moyenne de l'espérance de vie à la naissance provoque au effet positif et significatif sur le nombre d'individus pleinement vaccinés au sein des États. À cet égard, tel qu'abordé à la section "Exploration des variables liées à la vaccination" de la [page précédente](3-exploration.html), se sont notamment dans les pays occidentaux où l'espérance de vie est plus élevé, contrairement aux pays en voie de développement qui sont surtout localisés en Afrique subsaharienne ou en Asie du Sud-Est. De plus, il est aussi possible de constater que l'ensemble des continents, à l'exception de l'Europe, possèdent des coefficients positifs et significatifs lorsque comparés à la catégorie de référence, l'Afrique. C'est-à-dire que le fait de résider au sein de ces continents augmente positivement le taux de personnes ayant obtenues les doses nécessaires de vaccins contre la COVID-19. En outre, cette analyse permet par le fait même de rappeler l'importance de la distinction fondamentale entre un lien statistique et la causalité en sciences sociales.
+Le tableau \@ref(tab:tabreg1) et le graphique \@ref(fig:modele1) montrent que malgré une relation statistique qui semblait très forte entre le revenu par habitant et le taux de personnes pleinement vaccinées, telle que présentée dans le graphique \@ref(fig:relation1), certaines nuances doivent être apportées. En effet, l'ajout de variables de contrôle au modèle permet de montrer que le revenu par habitant affecte le taux de gens pleinement vaccinés de manière positive, mais très marginale. Par ailleurs, il est aussi possible de noter qu'un accroissement de la valeur de l'espérance de vie à la naissance provoque un effet positif et significatif (valeur p \< 0.05) sur le nombre d'individus pleinement vaccinés au sein des États. À cet égard, tel qu'abordé à la section "Exploration des variables liées à la vaccination" de la [page précédente](3-exploration.html), se sont notamment dans les pays occidentaux où l'espérance de vie est la plus élevée, contrairement aux pays en voie de développement qui sont surtout localisés en Afrique subsaharienne ou en Asie du Sud-Est. De plus, il est aussi possible de constater que l'ensemble des continents, à l'exception de l'Europe, possèdent des coefficients positifs et significatifs lorsque comparés à la catégorie de référence (l'Afrique). C'est-à-dire que le fait de résider au sein de ces continents augmente positivement le taux de personnes ayant obtenu les doses nécessaires de vaccins contre la COVID-19. En outre, cette analyse permet par le fait même de rappeler l'importance de la distinction fondamentale entre un lien statistique et la causalité en sciences sociales.
 :::
 
-## Analyse \#2: boosters et économie
+## Analyse \#2: Doses de rappel et économie
 
 ::: {style="text-align: justify"}
-À la suite de la présentation et de la visualisation de la première analyse, il est désormais intéressant de se questionner à savoir si la condition économique des pays, évaluée à partir de la varible `Income.per.person`, peut avoir un effet sur le taux de doses de rappel administrées par 100 habitants. Sur le plan théorique, il est possible de soumettre l'hypothèse que se sont davantage les pays riches qui bénéficient d'un accès plus large aux vaccins ainsi que les infrastuctures pour les administrés de façon efficace. De plus, un grand nombre de spécialistes lancent des appels répétés pour une meilleure distribution des ressources vaccinales à travers le monde, notamment pour éviter la multiplication de variants de la COVID-19 (\@cheng_hinnant_2021). À cet égard, l'arrivée du nouveau variant Omicron est venu précipiter la nécessité d'une dose de rappel - aussi surnommée *booster* - dans le but de freiner la propagation fulgurante du virus aux quatre coins de la planète. En somme, cette nouvelle situation épidémiologique rend intéressante l'analyse du lien potentiel entre le PIB par habitant des pays et le nombre de doses de rappel administrées, par 100 habitants.
+À la suite de la présentation et de la visualisation de la première analyse, il a été possible d'observer que la condition économique des États provoque un effet positif marginal sur le taux d'individus adéquatement vaccinés. Il est néanmoins intéressant de se questionner à savoir si la condition économique des pays, évaluée à partir de la variable `Income.per.person`, peut toutefois avoir un effet sur le taux de doses de rappel administrées par 100 habitants. Sur le plan théorique, il est possible de soutenir que se sont davantage les pays riches qui bénéficient d'un accès plus large aux vaccins ainsi qu'aux infrastructures pour les administrés de façon efficace. De plus, comme mentionné par @cheng_hinnant_2021, un grand nombre de spécialistes lancent des appels répétés pour une meilleure distribution des ressources vaccinales à travers le monde, notamment pour éviter la multiplication de variants de la COVID-19. À cet égard, l'arrivée du nouveau variant Omicron est venue précipiter la nécessité d'une dose de rappel - aussi surnommée *booster* - dans le but de freiner la propagation fulgurante du virus aux quatre coins de la planète. Cette nouvelle situation épidémiologique rend intéressante l'analyse du lien potentiel entre le PIB par habitant et le nombre de doses de rappel administrées, par 100 habitants. En somme, l'hypothèse soutenue dans cette analyse est qu'un revenu moyen par habitant plus élevé devrait accroître le pourcentage de doses de *boosters* distribuées.
 :::
 
 ```{r include=FALSE}
@@ -184,7 +197,7 @@ names(vacc_recent_fr)[names(vacc_recent_fr) == "name"] <- "Pays"
 
 names(vacc_recent_fr)[names(vacc_recent_fr) == "Income.per.person"] <- "PIB par habitant"
 
-names(vacc_recent_fr)[names(vacc_recent_fr) == "total_boosters_per_hundred"] <- "Doses administrées"
+names(vacc_recent_fr)[names(vacc_recent_fr) == "total_boosters_per_hundred"] <- "Doses administrées par 100 habitants"
 
 # Franciser les pays :
 
@@ -192,56 +205,62 @@ vacc_recent_fr <- vacc_recent_fr %>%
     mutate(Pays = countryname(Pays, destination = "un.name.fr")) 
 
 vacc_recent_fr$Pays <-  vacc_recent_fr$Pays %>% 
-  replace_na("Timor") #Francisation ne s'est pas effectuée, donc ajouter le Timor manuellement.
+  replace_na("Timor") 
 ```
 
-```{r relations2, fig.cap="Relation entre le revenu moyen par personne le taux de doses de rappel administrées", layout="l-body-outset", fig.width=6, fig.height=4}
-
+```{r relation2, fig.cap="Relation entre le revenu moyen par personne et le taux de doses de rappel administrées", layout="l-body-outset", fig.width=6, fig.height=4}
 # Graphique
 
-g11 <- ggplot(data = vacc_recent_fr,
-       aes(x = `PIB par habitant`, y = `Doses administrées`, color = Pays)) +
+g10 <- ggplot(data = vacc_recent_fr,
+       aes(x = `PIB par habitant`, y = `Doses administrées par 100 habitants`, color = continent)) +
   
-  geom_point() +
+  geom_point(alpha = 0.8) +
+  geom_smooth(method = "lm", level = 0.95, color = "#181f23") +
   
-  scale_x_continuous(name = "Revenu moyen par habitant (dollar international)",
-                     breaks = seq(0, 90000, 30000),
-                     labels = c("0", "30 000", "60 000", "90 000")) +
+  scale_x_continuous(name = "Revenu moyen par habitant (Int$)",
+                     breaks = seq(0, 115000, 25000),
+                     labels = c("0", "25 000", "50 000", "75 000", "100 000")) +
   scale_y_continuous(name = "Doses de rappel administrées (%)",
                      limits = c(0, 100)) +
+  scale_color_manual(values = c("#63ccca", "#313b72", "#462255", "#397367", "#7ae582"),
+                     labels = c("Afrique", "Asie", "Europe", "Océanie", "Amériques")) +
   
   labs(title = "Relation entre le revenu moyen par personne et le taux de doses de rappel administrées",
-       subtitle = "En fonction du taux le plus récent disponible par pays") +
+       subtitle = "En fonction du taux le plus récent disponible par pays",
+       color = "Continent") +
 
   theme_ipsum() +
   theme(plot.title = element_text(size = 10.5, vjust = 2),
-        plot.subtitle = element_text(size = 9, vjust = 4.2),
+        plot.subtitle = element_text(size = 9, vjust = 4.5),
         plot.background = element_rect(fill = "white", color = "white"),
         panel.background = element_rect(fill = "white", color = "white", size = 0.5, linetype = "solid"),
-        legend.position = "")
+        axis.text.y = element_text(size = 9),
+        axis.text.x = element_text(size = 9),
+        axis.title.y = element_text(size = 8),
+        axis.title.x = element_text(size = 8),
+        legend.title.align = 0.5)
 
-test <- ggplotly(g11)
+g10
 ```
 
 ```{r include=FALSE}
-saveWidget(as_widget(test), file = "figures/test.html")
+ggsave("figures/graphique_10.jpeg", plot = g10, width = 6, height = 4)
 ```
 
 ::: {style="text-align: justify"}
-Court texte ici.
+Grâce au graphique \@ref(fig:relation2) il est possible de noter une relation positive et moyenne entre le PIB par habitant (en dollar international constant de 2017) et le nombre de doses de rappel administrées par 100 habitants. Bien que positive, cette relation est moins forte en comparaison à celle présentée préalablement dans le graphique \@ref(fig:relation1). Par contre, la même problématique est décelable que lors de la première analyse, c'est-à-dire que ce type de graphique ne véhicule pas d'information sur le niveau de signification statistique ni sur le rôle exercé par des variables de contrôle. Cela dit, le modèle statistique de régression linéaire par les moindres carrés est retenu dans le but de pallier ces lacunes. Enfin, il est important de préciser que cette analyse est effectuée à partir d'un échantillon de 66 pays, car plusieurs pays contenus dans notre banque de données ne possèdent malheureusement pas d'information relative au pourcentage de doses de rappel injectées.
 :::
 
 ### Régression linéaire multiple
 
-```{r}
+```{r include=FALSE}
 # Manipulations :
 
 modele2 <- lm(total_boosters_per_hundred ~ Income.per.person + Life.expectancy + continent, data = vacc_recent)
 
 modele2_tableau <- tidy(modele2, conf.int = TRUE)
 
-new_modele2_tableau <- modele2_tableau %>% 
-  filter(!str_detect(term, "Intercept")) %>% 
+modele2_tableau <- modele2_tableau %>% 
   mutate(term = case_when(str_detect(term, "Life")~"Espérance de vie",
                           str_detect(term, "Income")~"Revenu par habitant (Int$)",
                           str_detect(term, "Océanie")~"Océanie",
@@ -250,32 +269,37 @@ new_modele2_tableau <- modele2_tableau %>%
                           str_detect(term, "Amériques")~"Amériques",
                           TRUE~term))
 
-new_modele2_tableau$estimate <- round(new_modele2_tableau$estimate, 5)
+modele2_tableau$estimate <- round(modele2_tableau$estimate, 5)
 
-new_modele2_tableau$std.error <- round(new_modele2_tableau$std.error, 5)
+modele2_tableau$std.error <- round(modele2_tableau$std.error, 5)
 
-new_modele2_tableau$statistic <- round(new_modele2_tableau$statistic, 5)
+modele2_tableau$statistic <- round(modele2_tableau$statistic, 5)
 
-new_modele2_tableau$p.value <- round(new_modele2_tableau$p.value, 5)
+modele2_tableau$p.value <- round(modele2_tableau$p.value, 5)
 
-new_modele2_tableau$conf.low <- round(new_modele2_tableau$conf.low, 5)
+modele2_tableau$conf.low <- round(modele2_tableau$conf.low, 5)
 
-new_modele2_tableau$conf.high <- round(new_modele2_tableau$conf.high, 5)
+modele2_tableau$conf.high <- round(modele2_tableau$conf.high, 5)
 
-colnames(new_modele2_tableau) <- c("Variable", "Coefficient", "Erreur standard", "Statistique t", "Valeur p", "Plancher int. de confiance", "Plafond int. de confiance")
+colnames(modele2_tableau) <- c("Variable", "Coefficient", "Erreur standard", "Statistique t", "Valeur p", "Plancher int. de confiance", "Plafond int. de confiance")
+
+new_modele2_tableau <- modele2_tableau 
+
+new_modele2_tableau <- new_modele2_tableau %>%  
+  filter(!str_detect(Variable, "Intercept")) 
 ```
 
 #### Tableau des résultats
 
 ```{r tabreg2, fig.cap="Résultats de la deuxième analyse de régression linéaire multiple"}
-kable(new_modele2_tableau, caption = "Résultats de la deuxième analyse de régression linéaire multiple") %>% 
+kable(modele2_tableau, caption = "Résultats de la deuxième analyse de régression linéaire multiple") %>% 
   kable_styling(full_width = FALSE, font_size = 12)
 ```
 
-```{r include=FALSE}
-kable(new_modele2_tableau, caption = "Résultats de la deuxième analyse de régression linéaire multiple") %>% 
+```{r include=FALSE, fig.cap="Résultats de la deuxième analyse de régression linéaire multiple"}
+kable(modele2_tableau, caption = "Résultats de la deuxième analyse de régression linéaire multiple") %>% 
   kable_styling(full_width = FALSE, font_size = 12) %>% 
-  save_kable("figures/table_13.png")
+  save_kable("figures/table_14.png")
 ```
 
 #### Visualisation des résultats
@@ -283,7 +307,7 @@ kable(new_modele2_tableau, caption = "Résultats de la deuxième analyse de rég
 ```{r modele2, fig.cap="Relation entre le revenu moyen par personne et le taux de doses de rappel administrées", layout="l-body-outset", fig.width=6, fig.height=4}
 # Graphique :
 
-g12 <- ggplot(data = new_modele2_tableau, 
+g11 <- ggplot(data = new_modele2_tableau, 
        aes(x = Coefficient,
            y = Variable,
            xmin = `Plancher int. de confiance`,
@@ -294,25 +318,27 @@ g12 <- ggplot(data = new_modele2_tableau,
   
   scale_x_continuous(name = "Coefficients et intervalles de confiance (95 %)") +
   scale_y_discrete(name = "",
-                   limits = c("Océanie", "Europe", "Amériques", "Asie", "Espérance de vie", "Revenu par habitant (Int$)")) +
+                   labels = c("Océanie", "Europe", "Amériques", "Asie", "Espérance de vie", "Revenu par habitant (Int$)")) +
   
-  labs(title = "Analyse linéaire multiple de l'effet du revenu moyen par habitant\nsur le pourcentage de doses de rappel administrées",
+  labs(title = "Régression linéaire multiple de l'effet du revenu moyen\npar habitant sur le pourcentage de doses de rappel administrées",
        subtitle = "En fonction des données les plus récentes disponibles, par pays") +
   
   theme_ipsum() +
   theme(plot.title = element_text(size = 11, vjust = 2),
         plot.subtitle = element_text(size = 8.5, vjust = 5),
         axis.text.y = element_text(size = 8),
+        axis.text.x = element_text(size = 9),
+        axis.title.x = element_text(size = 8),
         plot.background = element_rect(fill = "white", color = "white"),
         panel.background = element_rect(fill = "white", color = "white", size = 0.5, linetype = "solid"))
 
-g12
+g11
 ```
 
 ```{r include=FALSE}
-ggsave("figures/graphique_12.jpeg", plot = g12, width = 6, height = 4)
+ggsave("figures/graphique_11.jpeg", plot = g11, width = 6, height = 4)
 ```
 
 ::: {style="text-align: justify"}
-Commentaire sur le tableau \@ref(tab:tabreg2) et le graphique \@ref(fig:modele2).
+Le tableau \@ref(tab:tabreg2) et le graphique \@ref(fig:modele2) permettent de nuancer les observations notées plus haut concernant le lien entre la richesse économique d'un pays et son pourcentage de doses de *boosters* administrées. En ce sens, la présentation du modèle statistique entre ces deux variables et les variables de contrôle ajoutées met en évidence l'absence de relation significative entre celles-ci. Autrement dit, comme la valeur p d'aucune des variables du modèle n'est inférieure à 0.05, il n'est pas possible de rejeter l'hypothèse nulle. Cette absence de relation entre les deux variables du modèle peut paraître surprenante. Cependant, un échantillon avec un nombre d'observations plus élevé pourrait venir modifier quelque peu les résultats. Cette limite ne discrédite pas entièrement le modèle statistique présenté, mais elle mérite néanmoins d'être soulignée. Par ailleurs, il serait pertinent d'explorer davantage d'autres facteurs pouvant expliquer les écarts importants dans le nombre de doses de rappel administrées à l'échelle mondiale. Ainsi, les types de contrats entre les États et les compagnies pharmaceutiques, la présence ou non d'usines d'approvisionnement de vaccins ou même le type de régime politique en place dans les pays pourraient être des facteurs intéressants à explorer dans le futur.
 :::
